@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:chemicalExtractor"	},
+        "facing=up":    { "model": "atmrockhounding:chemicalExtractor" 	},
+        "facing=south": { "model": "atmrockhounding:chemicalExtractor", "y": 180},
+        "facing=north": { "model": "atmrockhounding:chemicalExtractor" },
+        "facing=east":  { "model": "atmrockhounding:chemicalExtractor", "y": 90  },
+        "facing=west":  { "model": "atmrockhounding:chemicalExtractor", "y": 270 }
+    }
+}

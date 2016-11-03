@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:mineralSizer"	},
+        "facing=up":    { "model": "atmrockhounding:mineralSizer" 	},
+        "facing=south": { "model": "atmrockhounding:mineralSizer"},
+        "facing=north": { "model": "atmrockhounding:mineralSizer", "y": 180 },
+        "facing=east":  { "model": "atmrockhounding:mineralSizer", "y": 270  },
+        "facing=west":  { "model": "atmrockhounding:mineralSizer", "y": 90 }
+    }
+}

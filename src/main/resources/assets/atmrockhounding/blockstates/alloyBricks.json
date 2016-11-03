@@ -1,0 +1,20 @@
+{
+    "variants": {
+		"type=cube": 		{"model" : "atmrockhounding:alloyBricks_cube"},
+		"type=scal": 		{"model" : "atmrockhounding:alloyBricks_scal"},
+		"type=bam": 		{"model" : "atmrockhounding:alloyBricks_bam"},
+ 		"type=yag": 		{"model" : "atmrockhounding:alloyBricks_yag"},
+		"type=cupronickel": 	{"model" : "atmrockhounding:alloyBricks_cupronickel"},
+		"type=nimonic": 	{"model" : "atmrockhounding:alloyBricks_nimonic"},
+		"type=hastelloy": 	{"model" : "atmrockhounding:alloyBricks_hastelloy"},
+		"type=nichrome": 	{"model" : "atmrockhounding:alloyBricks_nichrome"},
+        "type=mischmetal": 	{"model" : "atmrockhounding:alloyBricks_mischmetal"},
+		"type=rosegold": 	{"model" : "atmrockhounding:alloyBricks_rosegold"},
+		"type=greengold": 	{"model" : "atmrockhounding:alloyBricks_greengold"},
+		"type=whitegold": 	{"model" : "atmrockhounding:alloyBricks_whitegold"},
+		"type=shibuichi": 	{"model" : "atmrockhounding:alloyBricks_shibuichi"},
+		"type=tombak": 		{"model" : "atmrockhounding:alloyBricks_tombak"},
+		"type=pewter": 		{"model" : "atmrockhounding:alloyBricks_pewter"},
+		"type=corten": 		{"model" : "atmrockhounding:alloyBricks_corten"}
+   }
+}

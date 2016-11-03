@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:metalAlloyer"	},
+        "facing=up":    { "model": "atmrockhounding:metalAlloyer" 	},
+        "facing=south": { "model": "atmrockhounding:metalAlloyer"},
+        "facing=north": { "model": "atmrockhounding:metalAlloyer", "y": 180 },
+        "facing=east":  { "model": "atmrockhounding:metalAlloyer", "y": 270  },
+        "facing=west":  { "model": "atmrockhounding:metalAlloyer", "y": 90 }
+    }
+}

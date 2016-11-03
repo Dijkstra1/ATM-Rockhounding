@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "type=empty": {"model" : "atmrockhounding:saltMaker_empty"},
+        "type=water": {"model" : "atmrockhounding:saltMaker_water"},
+        "type=stepa": {"model" : "atmrockhounding:saltMaker_stepa"},
+        "type=stepb": {"model" : "atmrockhounding:saltMaker_stepb"},
+        "type=stepc": {"model" : "atmrockhounding:saltMaker_stepc"},
+        "type=stepd": {"model" : "atmrockhounding:saltMaker_stepd"},
+        "type=salt":  {"model" : "atmrockhounding:saltMaker_salt"}
+    }
+}

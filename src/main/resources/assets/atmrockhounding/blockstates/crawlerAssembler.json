@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:crawlerAssembler"	},
+        "facing=up":    { "model": "atmrockhounding:crawlerAssembler" 	},
+        "facing=south": { "model": "atmrockhounding:crawlerAssembler"},
+        "facing=north": { "model": "atmrockhounding:crawlerAssembler", "y": 180 },
+        "facing=east":  { "model": "atmrockhounding:crawlerAssembler", "y": 270  },
+        "facing=west":  { "model": "atmrockhounding:crawlerAssembler", "y": 90 }
+    }
+}

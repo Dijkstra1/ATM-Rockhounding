@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "type=off": {"model" : "rockhounding_chemistry:laserRedstoneRx_off"},
-        "type=on": 	{"model" : "rockhounding_chemistry:laserRedstoneRx_on"}
-    }
-}

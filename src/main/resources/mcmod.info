@@ -1,14 +1,14 @@
 [
 {
-  "modid": "rockhounding_chemistry",
-  "name": "Rockhounding: Chemistry",
-  "description": "Chemistry tries to run through the processes which bring a mined mineral to become chemical elements and alloys.",
+  "modid": "atmrockhounding",
+  "name": "ATM Rockhounding",
+  "description": "Re-write of the mod Rockhounding: Chemistry by GlobbyPotato for the ATM Expert modpack, with permission",
   "version": "1.10.2 - 1.06",
   "mcversion": "1.10.2",
   "url": "",
   "updateUrl": "",
-  "authorList": ["GlobbyPotato"],
-  "credits": "The Forge and FML guys. MrCrayfish for the Model Creator. al132 for the code fixing and support",
+  "authorList": ["GlobbyPotato, al132"],
+  "credits": "",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

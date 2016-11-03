@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:laserBeam"	},
+        "facing=up":    { "model": "atmrockhounding:laserBeam" },
+        "facing=south": { "model": "atmrockhounding:laserBeam" },
+        "facing=north": { "model": "atmrockhounding:laserBeam", "y": 180},
+        "facing=east":  { "model": "atmrockhounding:laserBeam", "y": 270  },
+        "facing=west":  { "model": "atmrockhounding:laserBeam", "y": 90 }
+    }
+}

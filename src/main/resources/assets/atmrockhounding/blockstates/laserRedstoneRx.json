@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "type=off": {"model" : "atmrockhounding:laserRedstoneRx_off"},
+        "type=on": 	{"model" : "atmrockhounding:laserRedstoneRx_on"}
+    }
+}

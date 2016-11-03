@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:mineralAnalyzer"	},
+        "facing=up":    { "model": "atmrockhounding:mineralAnalyzer" 	},
+        "facing=south": { "model": "atmrockhounding:mineralAnalyzer", "y": 180},
+        "facing=north": { "model": "atmrockhounding:mineralAnalyzer" },
+        "facing=east":  { "model": "atmrockhounding:mineralAnalyzer", "y": 90  },
+        "facing=west":  { "model": "atmrockhounding:mineralAnalyzer", "y": 270 }
+    }
+}

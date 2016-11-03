@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:labOven"	},
+        "facing=up":    { "model": "atmrockhounding:labOven" 	},
+        "facing=south": { "model": "atmrockhounding:labOven", "y": 180},
+        "facing=north": { "model": "atmrockhounding:labOven" },
+        "facing=east":  { "model": "atmrockhounding:labOven", "y": 90  },
+        "facing=west":  { "model": "atmrockhounding:labOven", "y": 270 }
+    }
+}

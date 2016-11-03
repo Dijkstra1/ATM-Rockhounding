@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:mineCrawler"	},
+        "facing=up":    { "model": "atmrockhounding:mineCrawler" },
+        "facing=south": { "model": "atmrockhounding:mineCrawler" },
+        "facing=north": { "model": "atmrockhounding:mineCrawler", "y": 180},
+        "facing=east":  { "model": "atmrockhounding:mineCrawler", "y": 270  },
+        "facing=west":  { "model": "atmrockhounding:mineCrawler", "y": 90 }
+    }
+}

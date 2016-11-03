@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "type=uninspected": {"model" : "atmrockhounding:mineralOres_uninspected"},
+        "type=arsenate": 	{"model" : "atmrockhounding:mineralOres_arsenate"},
+        "type=borate": 		{"model" : "atmrockhounding:mineralOres_borate"},
+        "type=carbonate": 	{"model" : "atmrockhounding:mineralOres_carbonate"},
+        "type=halide": 		{"model" : "atmrockhounding:mineralOres_halide"},
+        "type=native": 		{"model" : "atmrockhounding:mineralOres_native"},
+        "type=oxide": 		{"model" : "atmrockhounding:mineralOres_oxide"},
+        "type=phosphate": 	{"model" : "atmrockhounding:mineralOres_phosphate"},
+        "type=silicate": 	{"model" : "atmrockhounding:mineralOres_silicate"},
+        "type=sulfate": 	{"model" : "atmrockhounding:mineralOres_sulfate"},
+        "type=sulfide": 	{"model" : "atmrockhounding:mineralOres_sulfide"}
+    }
+}

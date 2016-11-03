@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=down":  { "model": "atmrockhounding:owcController"	},
+        "facing=up":    { "model": "atmrockhounding:owcController" 	},
+        "facing=south": { "model": "atmrockhounding:owcController", "y": 180},
+        "facing=north": { "model": "atmrockhounding:owcController" },
+        "facing=east":  { "model": "atmrockhounding:owcController", "y": 90  },
+        "facing=west":  { "model": "atmrockhounding:owcController", "y": 270 }
+    }
+}
