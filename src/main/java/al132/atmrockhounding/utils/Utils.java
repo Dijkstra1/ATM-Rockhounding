@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Utils {
@@ -20,6 +19,7 @@ public class Utils {
 	}
 
 
+	public static boolean isHandlerEmpty(IItemHandler handler){
 		boolean output = true;
 		for(int i = 0; i< handler.getSlots(); i++){
 			if(handler.getStackInSlot(i) != null) output = false;
