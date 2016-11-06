@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeWrapper;
-import al132.atmrockhounding.recipes.MineralSizerRecipe;
+import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 

@@ -1,4 +1,4 @@
-package al132.atmrockhounding.recipes;
+package al132.atmrockhounding.recipes.machines;
 
 import al132.atmrockhounding.enums.EnumFluid;
 import net.minecraft.item.Item;
@@ -18,7 +18,6 @@ public class LabOvenRecipe {
 	
 	public LabOvenRecipe(Item solute, int meta, EnumFluid solvent, EnumFluid output){
 		this(new ItemStack(solute,1,meta),solvent,output);
-
 	}
 	
 	public ItemStack getSolute(){

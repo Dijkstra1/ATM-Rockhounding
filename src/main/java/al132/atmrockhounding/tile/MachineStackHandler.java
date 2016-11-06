@@ -24,8 +24,9 @@ public class MachineStackHandler extends ItemStackHandler{
 	}
 
 	public void setOrIncrement(int slot, ItemStack stackToSet){
+		ItemStack temp = stackToSet.copy();
 		if(this.getStackInSlot(slot) == null){
-			this.setStackInSlot(slot, stackToSet);
+			this.setStackInSlot(slot, temp);
 		}
 		else{
 			incrementSlot(slot);
@@ -35,11 +36,12 @@ public class MachineStackHandler extends ItemStackHandler{
 	//this and setOrIncrement can be consolidated.. just don't feel like picking up the pieces
 	//at the time of writing
 	public void setOrAdd(int slot, ItemStack stackToSet){
+		ItemStack temp = stackToSet.copy();
 		if(this.getStackInSlot(slot) == null){
-			this.setStackInSlot(slot, stackToSet);
+			this.setStackInSlot(slot, temp);
 		}
 		else{
-			for(int i=0; i < stackToSet.stackSize; i++){
+			for(int i=0; i < temp.stackSize; i++){
 				incrementSlot(slot);
 			}
 		}

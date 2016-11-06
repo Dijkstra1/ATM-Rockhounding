@@ -3,6 +3,9 @@ jei.sizer.name=Mineral Sizer
 jei.Analyzer.name=Mineral Analyzer
 jei.alloyer.name=Metal Alloyer
 
+#### FLUID ####
+fluid.sulfuric_acid=Sulfuric Acid
+
 #### GENERAL ####
 itemGroup.rockhoundingChemistry=Rockhounding: Chemistry
 

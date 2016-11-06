@@ -5,6 +5,7 @@ import al132.atmrockhounding.client.gui.GuiChemicalExtractor;
 import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
+import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -37,7 +38,7 @@ public class TileChemicalExtractor extends TileMachine {
 				if(slot == INPUT_SLOT && hasRecipe(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && Utils.isItemFuel(insertingStack)){
+				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == REDSTONE_SLOT &&

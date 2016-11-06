@@ -1,9 +1,9 @@
-package al132.atmrockhounding.recipes;
+package al132.atmrockhounding.recipes.machines;
 
 import java.util.List;
 
+import al132.atmrockhounding.recipes.IMachineRecipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 
 public class ChemicalExtractorRecipe implements IMachineRecipe {
 

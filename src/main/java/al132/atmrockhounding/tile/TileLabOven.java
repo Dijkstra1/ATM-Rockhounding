@@ -4,10 +4,10 @@ import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.client.gui.GuiLabOven;
 import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.items.ModItems;
-import al132.atmrockhounding.recipes.LabOvenRecipe;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.machines.LabOvenRecipe;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
-import al132.atmrockhounding.utils.Utils;
+import al132.atmrockhounding.utils.FuelUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,7 +45,7 @@ public class TileLabOven extends TileMachine {
 				if(slot == SOLUTE_SLOT && isCorrectSolute(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && Utils.isItemFuel(insertingStack)){
+				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == SOLVENT_SLOT && isCorrectSolvent(insertingStack)){

@@ -6,12 +6,14 @@ import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.gui.GuiMetalAlloyer;
 import al132.atmrockhounding.items.ModItems;
-import al132.atmrockhounding.recipes.MetalAlloyerRecipe;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.machines.MetalAlloyerRecipe;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
+import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class TileMetalAlloyer extends TileMachine {
@@ -23,19 +25,18 @@ public class TileMetalAlloyer extends TileMachine {
 	public static final int SLOT_INDUCTOR = 8;
 
 	public static final int SLOT_OUTPUT = 0;
-	public static final int SLOT_SCRAP = 1;
 	private MetalAlloyerRecipe currentRecipe = null;
-	
+
 	public TileMetalAlloyer() {
-		super(9, 2, 6);
+		super(9, 1, 6);
 
 		input =  new MachineStackHandler(INPUT_SLOTS,this){
 			@Override
 			public ItemStack insertItem(int slot, ItemStack insertingStack, boolean simulate){
-				if(slot < SLOT_INPUTS.length && hasRecipe(insertingStack)){
+				if(slot < SLOT_INPUTS.length && inputHasRecipe(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && Utils.isItemFuel(insertingStack)){
+				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == SLOT_CONSUMABLE && ItemStack.areItemsEqualIgnoreDurability(insertingStack, new ItemStack(ModItems.ingotPattern))){
@@ -53,25 +54,26 @@ public class TileMetalAlloyer extends TileMachine {
 	public int getCookTimeMax(){
 		return ModConfig.speedAlloyer;
 	}
-	
+
 	public RangedWrapper getDustHandler(){
 		return new RangedWrapper(input,0,6);
 	}
 
 
-	public boolean hasRecipe(ItemStack inStack){
+	public boolean inputHasRecipe(ItemStack inStack){
 		ArrayList<ItemStack> stacksToCheck = new ArrayList<ItemStack>();
 		stacksToCheck.addAll(Utils.handlerToStackList(getDustHandler()));
 		stacksToCheck.add(inStack);
 
 		return ModRecipes.alloyerRecipes.stream()
-				.anyMatch(x ->Utils.listContainsStackList(stacksToCheck, x.getInputs(),false));
+				.anyMatch(recipe -> Utils.listContainsStackList(stacksToCheck, recipe.getAllPossibleInputItems(), false))
+				
+				&& Utils.handlerToStackList(getDustHandler()).stream().noneMatch(x ->ItemStack.areItemsEqual(x, inStack));
 	}
+	
 
 	public boolean matchesRecipe(){
-		this.currentRecipe = ModRecipes.alloyerRecipes.stream()
-				.filter(x -> Utils.listContainsStackList(x.getInputs(), Utils.handlerToStackList(getDustHandler()),true)).findFirst().orElse(null);
-		return this.currentRecipe != null;
+		return ModRecipes.getImmutableAlloyerRecipes().stream().anyMatch(x -> x.matches(getDustHandler()));
 	}
 
 
@@ -90,50 +92,62 @@ public class TileMetalAlloyer extends TileMachine {
 
 	@Override
 	public void update(){
-		if(input.getStackInSlot(FUEL_SLOT) != null){
-			fuelHandler();
+		if(!worldObj.isRemote){
+			if(input.getStackInSlot(FUEL_SLOT) != null){
+				fuelHandler();
+			}
+			if(canAlloy()){
+				execute(); 
+			}
+			this.markDirtyClient();
 		}
-		if(canAlloy()){
-			
-			execute(); 
-		}
-		this.markDirtyClient();
 	}
 
 	private void execute() {
 		if(cookTime == 0) {
-			consumeInput();
+
 		}
 		cookTime++;
 		powerCount--;
 		if(cookTime >= getCookTimeMax()) {
 			cookTime = 0; 
+			consumeInput();
 			addOutput();
 		}
 	}
 
 	private void consumeInput(){
 		for(int i=0;i<getDustHandler().getSlots();i++){
-			for(ItemStack recipeStack: currentRecipe.getInputs()){
-				if(ItemStack.areItemsEqual(getDustHandler().getStackInSlot(i), recipeStack)){
-					for(int j=0; j<recipeStack.stackSize;j++){
-						Utils.decrementSlot(getDustHandler(), i);
+			for(ArrayList<ItemStack> ingredient: currentRecipe.getInputs()){
+				for(ItemStack ingredientStack: ingredient){
+					if(ItemStack.areItemsEqual(getDustHandler().getStackInSlot(i), ingredientStack)){
+						for(int j=0; j<ingredientStack.stackSize;j++){
+							Utils.decrementSlot(getDustHandler(), i);
+						}
 					}
 				}
 			}
 		}
 	}
-	
+
 	private boolean canOutput(){
 		if(this.output.getStackInSlot(SLOT_OUTPUT) == null) return true;
-		else return ItemStack.areItemsEqual(currentRecipe.getOutputs().get(0), output.getStackInSlot(SLOT_OUTPUT));
+		else if(this.currentRecipe == null) return false;
+		else return (currentRecipe.getOutputs().get(0).stackSize + output.getStackInSlot(0).stackSize) <= output.getStackInSlot(0).getMaxStackSize()
+				&& ItemHandlerHelper.canItemStacksStack(currentRecipe.getOutputs().get(0),output.getStackInSlot(SLOT_OUTPUT));
 	}
-	
+
 	private void addOutput(){
 		output.setOrAdd(SLOT_OUTPUT, currentRecipe.getOutputs().get(0));
 	}
 
 	private boolean canAlloy() {
+		System.out.println("========");
+		System.out.println("Matches: " + matchesRecipe());
+		System.out.println("hasConsumable: " + hasConsumable());
+		System.out.println("power: " + (powerCount >= getCookTimeMax()));
+		System.out.println("canOutput: " + canOutput());
+		
 		return  matchesRecipe()
 				&& hasConsumable() 
 				&& powerCount >= getCookTimeMax()
@@ -152,6 +166,6 @@ public class TileMetalAlloyer extends TileMachine {
 
 	@Override
 	public boolean canInduct(){
-		return !(input.getStackInSlot(SLOT_INDUCTOR) == null);
+		return input.getStackInSlot(SLOT_INDUCTOR) != null;
 	}
 }

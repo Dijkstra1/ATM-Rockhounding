@@ -3,7 +3,7 @@ package al132.atmrockhounding.compat.jei.alloyer;
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
-import al132.atmrockhounding.recipes.MetalAlloyerRecipe;
+import al132.atmrockhounding.recipes.machines.MetalAlloyerRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 

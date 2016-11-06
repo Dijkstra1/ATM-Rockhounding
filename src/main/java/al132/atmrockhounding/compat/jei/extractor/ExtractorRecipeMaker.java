@@ -3,8 +3,8 @@ package al132.atmrockhounding.compat.jei.extractor;
 import java.util.ArrayList;
 import java.util.List;
 
-import al132.atmrockhounding.recipes.ChemicalExtractorRecipe;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.machines.ChemicalExtractorRecipe;
 
 public class ExtractorRecipeMaker {
 

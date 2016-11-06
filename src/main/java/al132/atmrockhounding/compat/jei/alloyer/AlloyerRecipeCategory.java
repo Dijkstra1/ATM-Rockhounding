@@ -53,11 +53,9 @@ public class AlloyerRecipeCategory extends RHRecipeCategory {
 		guiItemStacks.set(CONSUMABLE_SLOT, new ItemStack(ModItems.ingotPattern));
 		guiItemStacks.set(OUTPUT_SLOT, wrapper.getOutputs());
 		for(int i=0; (i<6 && i < wrapper.getInputs().size()); i++){
-			guiItemStacks.set(INPUT_SLOT+i, wrapper.getInputs().get(i));
+			guiItemStacks.set(INPUT_SLOT+i, (wrapper.getInputs().get(i)));
 		}
 		
-		
-	
 	}
 
 	@Override

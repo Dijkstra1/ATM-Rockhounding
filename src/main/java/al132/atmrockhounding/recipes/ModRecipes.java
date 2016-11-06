@@ -8,6 +8,12 @@ import al132.atmrockhounding.enums.EnumAlloy;
 import al132.atmrockhounding.enums.EnumElement;
 import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.items.ModItems;
+import al132.atmrockhounding.recipes.machines.ChemicalExtractorRecipe;
+import al132.atmrockhounding.recipes.machines.LabOvenRecipe;
+import al132.atmrockhounding.recipes.machines.MetalAlloyerRecipe;
+import al132.atmrockhounding.recipes.machines.MineralAnalyzerRecipe;
+import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
+import al132.atmrockhounding.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,6 +21,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import static al132.atmrockhounding.enums.EnumAlloy.*;
+import static al132.atmrockhounding.enums.EnumElement.*;
 
 
 public class ModRecipes {
@@ -24,6 +33,10 @@ public class ModRecipes {
 	public static final ArrayList<MineralAnalyzerRecipe> analyzerRecipes = new ArrayList<MineralAnalyzerRecipe>();
 	public static final ArrayList<ChemicalExtractorRecipe> extractorRecipes = new ArrayList<ChemicalExtractorRecipe>();
 
+	public static ArrayList<MetalAlloyerRecipe> getImmutableAlloyerRecipes(){
+		return new ArrayList<MetalAlloyerRecipe>(alloyerRecipes);
+	}
+	
 	private static ItemStack dustforcedstack;
 	private static ItemStack ingotforcedstack;
 
@@ -45,8 +58,28 @@ public class ModRecipes {
 
 
 	public static void init() {
+		loadDictionary();
 		craftingRecipes();
 		machineRecipes();
+
+	}
+
+	
+	public static void loadDictionary()  {
+		OreDictionary.registerOre("dustSalt", new ItemStack(ModItems.chemicalItems, 1, 1));	
+		OreDictionary.registerOre("itemFluorite", new ItemStack(ModItems.halideShards, 1, 4));	
+		OreDictionary.registerOre("itemPyrite", new ItemStack(ModItems.sulfideShards, 1, 6));	
+
+		for(int x = 0; x < EnumElement.size(); x++){
+			OreDictionary.registerOre(EnumElement.getDustName(x), new ItemStack(ModItems.chemicalDusts, 1, x));	
+		}
+
+		for(int x = 0; x < EnumAlloy.size(); x++){
+			OreDictionary.registerOre(EnumAlloy.getDictName("blocks", x), new ItemStack(ModBlocks.alloyBlocks, 1, x));
+			OreDictionary.registerOre(EnumAlloy.getDictName("dust",x), new ItemStack(ModItems.alloyDusts, 1, x));	
+			OreDictionary.registerOre(EnumAlloy.getDictName("ingot",x), new ItemStack(ModItems.alloyIngots, 1, x));	
+			OreDictionary.registerOre(EnumAlloy.getDictName("nugget",x), new ItemStack(ModItems.alloyNuggets, 1, x));	
+		}
 	}
 
 
@@ -76,108 +109,111 @@ public class ModRecipes {
 		analyzerRecipes.add(new MineralAnalyzerRecipe(ModBlocks.mineralOres,10,ModItems.sulfideShards, new int[]{ 6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6}));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.CUBE.ordinal()),
-				7, EnumElement.COPPER.ordinal(),
-				2, EnumElement.BERYLLIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8, CUBE.ordinal()),
+				Utils.getOres(COPPER.getDustName(),7),
+				Utils.getOres(BERYLLIUM.getDustName(),2)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.SCAL.ordinal()),
-				7, EnumElement.ALUMINUM.ordinal(),
-				2, EnumElement.SCANDIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,SCAL.ordinal()),
+				Utils.getOres(ALUMINUM.getDustName(),7),
+				Utils.getOres(SCANDIUM.getDustName(),2)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.BAM.ordinal()),
-				6, EnumElement.BORON.ordinal(),
-				2, EnumElement.ALUMINUM.ordinal(),
-				1, EnumElement.MAGNESIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,BAM.ordinal()),
+				Utils.getOres(BORON.getDustName(),6),
+				Utils.getOres(ALUMINUM.getDustName(),2),
+				Utils.getOres(MAGNESIUM.getDustName(),1)));
+
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.YAG.ordinal()),
-				4, EnumElement.YTTRIUM.ordinal(),
-				2, EnumElement.ALUMINUM.ordinal(),
-				2, EnumElement.NEODYMIUM.ordinal(),
-				1, EnumElement.CHROMIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,YAG.ordinal()),
+				Utils.getOres(YTTRIUM.getDustName(),4),
+				Utils.getOres(ALUMINUM.getDustName(),2),
+				Utils.getOres(NEODYMIUM.getDustName(),2),
+				Utils.getOres(CHROMIUM.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.CUPRONICKEL.ordinal()),
-				4, EnumElement.COPPER.ordinal(),
-				2, EnumElement.NICKEL.ordinal(),
-				2, EnumElement.MANGANESE.ordinal(),
-				1, EnumElement.IRON.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,CUPRONICKEL.ordinal()),
+				Utils.getOres(COPPER.getDustName(),4),
+				Utils.getOres(NICKEL.getDustName(),2),
+				Utils.getOres(MANGANESE.getDustName(),2),
+				Utils.getOres(IRON.getDustName(),1)));
+		
+		
+		alloyerRecipes.add(new MetalAlloyerRecipe(
+				new ItemStack(ModItems.alloyIngots,8,NIMONIC.ordinal()),
+				Utils.getOres(NICKEL.getDustName(),5),
+				Utils.getOres(COBALT.getDustName(),2),
+				Utils.getOres(CHROMIUM.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.NIMONIC.ordinal()),
-				5, EnumElement.NICKEL.ordinal(),
-				2, EnumElement.COBALT.ordinal(),
-				2, EnumElement.CHROMIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8, HASTELLOY.ordinal()),
+				Utils.getOres(IRON.getDustName(),5),
+				Utils.getOres(NICKEL.getDustName(),3),
+				Utils.getOres(CHROMIUM.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.HASTELLOY.ordinal()),
-				5, EnumElement.IRON.ordinal(),
-				3, EnumElement.NICKEL.ordinal(),
-				1, EnumElement.CHROMIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,NICHROME.ordinal()),
+				Utils.getOres(NICKEL.getDustName(),6),
+				Utils.getOres(CHROMIUM.getDustName(),2),
+				Utils.getOres(IRON.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.NICHROME.ordinal()),
-				6, EnumElement.NICKEL.ordinal(),
-				2, EnumElement.CHROMIUM.ordinal(),
-				1, EnumElement.IRON.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,MISCHMETAL.ordinal()),
+				Utils.getOres(CERIUM.getDustName(),4),
+				Utils.getOres(LANTHANUM.getDustName(),2),
+				Utils.getOres(NEODYMIUM.getDustName(),1),
+				Utils.getOres(PRASEODYMIUM.getDustName(),1),
+				Utils.getOres(IRON.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.MISCHMETAL.ordinal()),
-				4, EnumElement.CERIUM.ordinal(),
-				2, EnumElement.LANTHANUM.ordinal(),
-				1, EnumElement.NEODYMIUM.ordinal(),
-				1, EnumElement.PRASEODYMIUM.ordinal(),
-				1, EnumElement.IRON.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,ROSEGOLD.ordinal()),
+				Utils.getOres(GOLD.getDustName(),5),
+				Utils.getOres(COPPER.getDustName(),3),
+				Utils.getOres(SILVER.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.ROSEGOLD.ordinal()),
-				5, EnumElement.GOLD.ordinal(),
-				3, EnumElement.COPPER.ordinal(),
-				1, EnumElement.SILVER.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,GREENGOLD.ordinal()),
+				Utils.getOres(GOLD.getDustName(),5),
+				Utils.getOres(SILVER.getDustName(),2),
+				Utils.getOres(COPPER.getDustName(),1),
+				Utils.getOres(CADMIUM.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.GREENGOLD.ordinal()),
-				5, EnumElement.GOLD.ordinal(),
-				2, EnumElement.SILVER.ordinal(),
-				1, EnumElement.COPPER.ordinal(),
-				1, EnumElement.CADMIUM.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,WHITEGOLD.ordinal()),
+				Utils.getOres(GOLD.getDustName(),5),
+				Utils.getOres(SILVER.getDustName(),2),
+				Utils.getOres(COPPER.getDustName(),1),
+				Utils.getOres(MANGANESE.getDustName(),1)));
+		
+		alloyerRecipes.add(new MetalAlloyerRecipe(
+				new ItemStack(ModItems.alloyIngots,8,SHIBUICHI.ordinal()),
+				Utils.getOres(COPPER.getDustName(),7),
+				Utils.getOres(SILVER.getDustName(),2),
+				Utils.getOres(GOLD.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.WHITEGOLD.ordinal()),
-				5, EnumElement.GOLD.ordinal(),
-				2, EnumElement.SILVER.ordinal(),
-				1, EnumElement.COPPER.ordinal(),
-				1, EnumElement.MANGANESE.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,TOMBAK.ordinal()),
+				Utils.getOres(COPPER.getDustName(), 6),
+				Utils.getOres(ZINC.getDustName(), 2),
+				Utils.getOres(ARSENIC.getDustName(), 1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.SHIBUICHI.ordinal()),
-				7, EnumElement.COPPER.ordinal(),
-				2, EnumElement.SILVER.ordinal(),
-				1, EnumElement.GOLD.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,PEWTER.ordinal()),
+				Utils.getOres(TIN.getDustName(),5),
+				Utils.getOres(COPPER.getDustName(),1),
+				Utils.getOres(BISMUTH.getDustName(),1),
+				Utils.getOres(LEAD.getDustName(),1)));
 
 		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.TOMBAK.ordinal()),
-				6, EnumElement.COPPER.ordinal(),
-				2, EnumElement.ZINC.ordinal(),
-				1, EnumElement.ARSENIC.ordinal()));
-
-		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.PEWTER.ordinal()),
-				5, EnumElement.TIN.ordinal(),
-				1, EnumElement.COPPER.ordinal(),
-				1, EnumElement.BISMUTH.ordinal(),
-				1, EnumElement.LEAD.ordinal()));
-
-		alloyerRecipes.add(new MetalAlloyerRecipe(
-				new ItemStack(ModItems.alloyIngots,8,EnumAlloy.CORTEN.ordinal()),
-				2, EnumElement.NICKEL.ordinal(),
-				2, EnumElement.SILICON.ordinal(),
-				2, EnumElement.CHROMIUM.ordinal(),
-				1, EnumElement.PHOSPHORUS.ordinal(),
-				1, EnumElement.MANGANESE.ordinal(),
-				1, EnumElement.COPPER.ordinal()));
+				new ItemStack(ModItems.alloyIngots,8,CORTEN.ordinal()),
+				Utils.getOres(NICKEL.getDustName(), 2),
+				Utils.getOres(SILICON.getDustName(), 2),
+				Utils.getOres(CHROMIUM.getDustName(), 2),
+				Utils.getOres(PHOSPHORUS.getDustName(), 1),
+				Utils.getOres(MANGANESE.getDustName(), 1),
+				Utils.getOres(COPPER.getDustName(), 1)));
+				
 	}
 
 
@@ -203,7 +239,7 @@ public class ModRecipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.alloyIngots, 1, x ), new Object[] { "XXX", "XXX", "XXX", 'X', EnumAlloy.getDictName("nugget",x)}));
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyIngots, 9, x), new Object[] { EnumAlloy.getDictName("blocks", x)}));
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyNuggets, 9, x), new Object[] { new ItemStack(ModItems.alloyIngots,1,x).getItem() }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBlocks, 1, x), new Object[] { "XXX", "XXX", "XXX", 'X', new ItemStack(ModItems.alloyIngots,1,x).getItem() }));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBlocks, 1, x), new Object[] { "XXX", "XXX", "XXX", 'X', new ItemStack(ModItems.alloyIngots,1,x) }));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBricks, 4, x), new Object[] { "XX", "XX", 'X', EnumAlloy.getDictName("blocks", x)}));
 		}
 

@@ -3,7 +3,7 @@ package al132.atmrockhounding.compat.jei.extractor;
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
-import al132.atmrockhounding.recipes.ChemicalExtractorRecipe;
+import al132.atmrockhounding.recipes.machines.ChemicalExtractorRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 

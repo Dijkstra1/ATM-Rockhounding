@@ -8,8 +8,9 @@ import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.blocks.ModBlocks;
 import al132.atmrockhounding.client.gui.GuiMineralSizer;
 import al132.atmrockhounding.items.ModItems;
-import al132.atmrockhounding.recipes.MineralSizerRecipe;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
+import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +41,7 @@ public class TileMineralSizer extends TileMachine {
 				if(slot == 0 && (hasRecipe(insertingStack) || isIngotOredicted(insertingStack)) ){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == 1 && Utils.isItemFuel(insertingStack)){
+				if(slot == 1 && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == 2 && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModItems.gear), insertingStack)){

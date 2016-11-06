@@ -68,6 +68,10 @@ public enum EnumElement {
 		return "dust" + getName(index).substring(0,1).toUpperCase() + getName(index).substring(1);
 	}
 	
+	public String getDustName(){
+		return this.getDustName(this.ordinal());
+	}
+	
 	public static String getIngotName(int index){
 		return "ingot" + getName(index).substring(0,1).toUpperCase() + getName(index).substring(1);
 	}

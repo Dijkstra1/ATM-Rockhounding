@@ -2,7 +2,7 @@ package al132.atmrockhounding.tile;
 
 import java.util.Random;
 
-import al132.atmrockhounding.utils.Utils;
+import al132.atmrockhounding.utils.FuelUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,15 +32,15 @@ public class TileMachine extends TileInv  implements IRFStorage {
 
 
 	protected void fuelHandler() {
-		if(input.getStackInSlot(FUEL_SLOT) != null && Utils.isItemFuel(input.getStackInSlot(FUEL_SLOT)) ){
-			if( powerCount <= (powerMax - Utils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT))) ){
+		if(input.getStackInSlot(FUEL_SLOT) != null && FuelUtils.isItemFuel(input.getStackInSlot(FUEL_SLOT)) ){
+			if( powerCount <= (powerMax - FuelUtils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT))) ){
 				burnFuel();
 			}
 		}
 	}
 
 	protected void burnFuel() {
-		powerCount += Utils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT));
+		powerCount += FuelUtils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT));
 		ItemStack stack = input.getStackInSlot(FUEL_SLOT);
 		stack.stackSize--;
 		input.setStackInSlot(FUEL_SLOT, stack);

@@ -1,10 +1,11 @@
-package al132.atmrockhounding.recipes;
+package al132.atmrockhounding.recipes.machines;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import al132.atmrockhounding.utils.ProbabilityStack;
+import al132.atmrockhounding.recipes.IMachineRecipe;
+import al132.atmrockhounding.recipes.ProbabilityStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

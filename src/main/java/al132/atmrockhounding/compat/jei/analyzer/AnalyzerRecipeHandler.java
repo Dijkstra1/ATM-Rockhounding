@@ -3,7 +3,7 @@ package al132.atmrockhounding.compat.jei.analyzer;
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
-import al132.atmrockhounding.recipes.MineralAnalyzerRecipe;
+import al132.atmrockhounding.recipes.machines.MineralAnalyzerRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 

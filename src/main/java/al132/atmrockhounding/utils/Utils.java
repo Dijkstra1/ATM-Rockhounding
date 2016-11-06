@@ -2,21 +2,12 @@ package al132.atmrockhounding.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class Utils {
 
@@ -28,34 +19,6 @@ public class Utils {
 		else return temp;
 	}
 
-
-	public static boolean isItemFuel(ItemStack stack){
-		return Utils.getItemBurnTime(stack) > 0;
-	}
-
-
-	public static int getItemBurnTime(ItemStack stack){
-		if (stack == null){
-			return 0;
-		}else{
-			Item item = stack.getItem();
-			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.AIR){
-				Block block = Block.getBlockFromItem(item);
-				if (block == Blocks.WOODEN_SLAB){return 150;}
-				if (block.getDefaultState().getMaterial() == Material.WOOD){return 300;}
-				if (block == Blocks.COAL_BLOCK){return 14400;}
-			}
-			if (item instanceof ItemTool && "WOOD".equals(((ItemTool)item).getToolMaterialName())) return 200;
-			if (item instanceof ItemSword && "WOOD".equals(((ItemSword)item).getToolMaterialName())) return 200;
-			if (item instanceof ItemHoe && "WOOD".equals(((ItemHoe)item).getMaterialName())) return 200;
-			if (item == Items.STICK) return 100;
-			if (item == Items.COAL) return 1600;
-			if (item == Items.LAVA_BUCKET) return 20000;
-			if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
-			if (item == Items.BLAZE_ROD) return 2400;
-			return net.minecraftforge.fml.common.registry.GameRegistry.getFuelValue(stack);
-		}
-	}
 
 	public static boolean isHandlerEmpty(ItemStackHandler handler){
 		boolean output = true;
@@ -80,7 +43,7 @@ public class Utils {
 		}
 		return temp;
 	}
-	
+
 	public static List<ItemStack> handlerToStackList(IItemHandler handler){
 		ArrayList<ItemStack> temp = new ArrayList<ItemStack>();
 		for(int i=0;i<handler.getSlots();i++){
@@ -91,11 +54,11 @@ public class Utils {
 		return temp;
 	}
 
-	
+
 	public static boolean listContainsStack(ItemStack stack, List<ItemStack> list, boolean sizeSensitive){
 		if(sizeSensitive) return list.stream().anyMatch(listStack ->
-			ItemStack.areItemsEqual(stack, listStack) && listStack.stackSize >= stack.stackSize);
-		
+		ItemStack.areItemsEqual(stack, listStack) && listStack.stackSize >= stack.stackSize);
+
 		else return list.stream().anyMatch(listStack -> ItemStack.areItemsEqual(stack, listStack));
 	}
 
@@ -106,7 +69,7 @@ public class Utils {
 		}
 		return matchingStacks == smallStack.size();
 	}
-	
+
 	public static void decrementSlot(IItemHandlerModifiable handler, int slot){
 		ItemStack temp = handler.getStackInSlot(slot);
 		temp.stackSize--;
@@ -114,19 +77,39 @@ public class Utils {
 		else handler.setStackInSlot(slot, temp);
 	}
 	
-
-	public static ItemStack calculateProbability(ArrayList<ProbabilityStack> stacks){
-		int totalProbability = 0;
-		Random r = new Random();
-		for(ProbabilityStack stack: stacks){
-			totalProbability += stack.getProbability();
+	public static ArrayList<ItemStack> getOres(String name, int quantity){
+		ArrayList<ItemStack> listToReturn = new ArrayList<ItemStack>();
+		
+		List<ItemStack> oreStacks = OreDictionary.getOres(name);
+		for(ItemStack stack: oreStacks){
+			ItemStack tempStack = stack.copy();
+			tempStack.stackSize = quantity;
+			listToReturn.add(tempStack);
 		}
-		int rando = r.nextInt(totalProbability);
-		int trackingProb = 0;
-		for(ProbabilityStack stack: stacks){
-			trackingProb += stack.getProbability();
-			if(trackingProb >= rando) return stack.getStack();
-		}
-		return null;
+		return listToReturn;
 	}
+
+
+	public static List<ItemStack> getMatchingOreStacks(ItemStack stack, boolean includeParamStack){
+		ArrayList<ItemStack> stacksToReturn = new ArrayList<ItemStack>();
+		ArrayList<String> oreNames = new ArrayList<String>();
+
+		if(includeParamStack) stacksToReturn.add(stack);
+		int[] oreIds = OreDictionary.getOreIDs(stack);
+		for(int i=0;i<oreIds.length;i++){
+			oreNames.add(OreDictionary.getOreName(oreIds[i]));
+		}
+		for(String oreName: oreNames){
+			for(ItemStack s: OreDictionary.getOres(oreName)){
+				ItemStack tempStack = s.copy();
+				tempStack.stackSize = stack.stackSize;
+				stacksToReturn.add(tempStack);
+			}
+			stacksToReturn.addAll(OreDictionary.getOres(oreName));
+		}
+		
+		if(stacksToReturn.size()>0) return stacksToReturn;
+		else return null;
+	}
+	
 }

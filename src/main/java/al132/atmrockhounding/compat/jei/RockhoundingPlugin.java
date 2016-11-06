@@ -56,7 +56,7 @@ public class RockhoundingPlugin extends BlankModPlugin{
 		registry.addRecipeClickArea(GuiMineralSizer.class, 45, 55, 70, 50, RHRecipeUID.SIZER);
 		registry.addRecipeClickArea(GuiMineralAnalyzer.class, 39, 30, 35, 75, RHRecipeUID.ANALYZER);
 		//registry.addRecipeClickArea(GuiChemicalExtractor.class, 20, 20, 200, 30, RHRecipeUID.EXTRACTOR);
-		registry.addRecipeClickArea(GuiMetalAlloyer.class, 40, 65, 130, 20, RHRecipeUID.ALLOYER);
+		registry.addRecipeClickArea(GuiMetalAlloyer.class, 40, 67, 130, 18, RHRecipeUID.ALLOYER);
 		
 		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.mineralSizer), RHRecipeUID.SIZER);
 		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.mineralAnalyzer), RHRecipeUID.ANALYZER);

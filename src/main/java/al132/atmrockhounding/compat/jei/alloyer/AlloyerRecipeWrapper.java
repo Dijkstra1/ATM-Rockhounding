@@ -1,12 +1,13 @@
 package al132.atmrockhounding.compat.jei.alloyer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeWrapper;
-import al132.atmrockhounding.recipes.MetalAlloyerRecipe;
+import al132.atmrockhounding.recipes.machines.MetalAlloyerRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 
@@ -19,7 +20,7 @@ public class AlloyerRecipeWrapper extends RHRecipeWrapper<MetalAlloyerRecipe> {
 
 	@Nonnull
 	@Override
-	public List<ItemStack> getInputs() {
+	public ArrayList<ArrayList<ItemStack>> getInputs() {
 		return getRecipe().getInputs();
 	}
 

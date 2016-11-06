@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import al132.atmrockhounding.blocks.ModBlocks;
-import al132.atmrockhounding.recipes.MineralSizerRecipe;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
 import net.minecraft.item.ItemStack;
 
 public class SizerRecipeMaker {

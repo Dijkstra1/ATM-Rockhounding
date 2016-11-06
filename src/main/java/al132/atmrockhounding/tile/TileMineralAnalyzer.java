@@ -7,6 +7,8 @@ import al132.atmrockhounding.client.gui.GuiMineralAnalyzer;
 import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.ModRecipes;
+import al132.atmrockhounding.recipes.ProbabilityStack;
+import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,7 +42,7 @@ public class TileMineralAnalyzer extends TileMachine {
 				if(slot == INPUT_SLOT && insertingStack.getMetadata() != 0 && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModBlocks.mineralOres), insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && Utils.isItemFuel(insertingStack)){
+				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == CONSUMABLE_SLOT && insertingStack.getItem() == ModItems.testTube){
@@ -154,7 +156,7 @@ public class TileMineralAnalyzer extends TileMachine {
 		default: break;
 		}
 		handleOutput(outItem, 
-				Utils.calculateProbability(ModRecipes.analyzerRecipes.get(entryMineral-1).getProbabilityStack()).getItemDamage());
+				ProbabilityStack.calculateProbability(ModRecipes.analyzerRecipes.get(entryMineral-1).getProbabilityStack()).getItemDamage());
 		//handleOutput(outItem,ModRecipes.analyzerRecipes.get(entryMineral-1).getOutputs().calculateOutput().getItemDamage());
 	}
 

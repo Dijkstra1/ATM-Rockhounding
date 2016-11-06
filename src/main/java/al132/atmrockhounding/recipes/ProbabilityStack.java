@@ -1,4 +1,7 @@
-package al132.atmrockhounding.utils;
+package al132.atmrockhounding.recipes;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -32,5 +35,22 @@ public class ProbabilityStack {
 	
 	public int getProbability(){
 		return this.probability;
+	}
+	
+	
+
+	public static ItemStack calculateProbability(ArrayList<ProbabilityStack> stacks){
+		int totalProbability = 0;
+		Random r = new Random();
+		for(ProbabilityStack stack: stacks){
+			totalProbability += stack.getProbability();
+		}
+		int rando = r.nextInt(totalProbability);
+		int trackingProb = 0;
+		for(ProbabilityStack stack: stacks){
+			trackingProb += stack.getProbability();
+			if(trackingProb >= rando) return stack.getStack();
+		}
+		return null;
 	}
 }
