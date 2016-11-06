@@ -67,13 +67,22 @@ public class TileMetalAlloyer extends TileMachine {
 
 		return ModRecipes.alloyerRecipes.stream()
 				.anyMatch(recipe -> Utils.listContainsStackList(stacksToCheck, recipe.getAllPossibleInputItems(), false))
-				
+
 				&& Utils.handlerToStackList(getDustHandler()).stream().noneMatch(x ->ItemStack.areItemsEqual(x, inStack));
 	}
-	
+
 
 	public boolean matchesRecipe(){
-		return ModRecipes.getImmutableAlloyerRecipes().stream().anyMatch(x -> x.matches(getDustHandler()));
+		this.currentRecipe = null;
+		if(!Utils.isHandlerEmpty(getDustHandler())){
+			for(MetalAlloyerRecipe recipe: ModRecipes.getImmutableAlloyerRecipes()){
+				if(recipe.matches(getDustHandler())){
+					this.currentRecipe = recipe;
+					break;
+				}
+			}
+		}
+		return this.currentRecipe != null;
 	}
 
 
@@ -104,25 +113,26 @@ public class TileMetalAlloyer extends TileMachine {
 	}
 
 	private void execute() {
-		if(cookTime == 0) {
 
-		}
 		cookTime++;
 		powerCount--;
 		if(cookTime >= getCookTimeMax()) {
 			cookTime = 0; 
 			consumeInput();
 			addOutput();
+			this.currentRecipe = null;
 		}
 	}
 
 	private void consumeInput(){
 		for(int i=0;i<getDustHandler().getSlots();i++){
-			for(ArrayList<ItemStack> ingredient: currentRecipe.getInputs()){
-				for(ItemStack ingredientStack: ingredient){
-					if(ItemStack.areItemsEqual(getDustHandler().getStackInSlot(i), ingredientStack)){
-						for(int j=0; j<ingredientStack.stackSize;j++){
-							Utils.decrementSlot(getDustHandler(), i);
+			if(getDustHandler().getStackInSlot(i) != null){
+				for(ArrayList<ItemStack> ingredient: currentRecipe.getInputs()){
+					for(ItemStack ingredientStack: ingredient){
+						if(ItemStack.areItemsEqual(getDustHandler().getStackInSlot(i), ingredientStack)){
+							for(int j=0; j<ingredientStack.stackSize;j++){
+								Utils.decrementSlot(getDustHandler(), i);
+							}
 						}
 					}
 				}
@@ -131,8 +141,8 @@ public class TileMetalAlloyer extends TileMachine {
 	}
 
 	private boolean canOutput(){
+		if(this.currentRecipe == null) return false;
 		if(this.output.getStackInSlot(SLOT_OUTPUT) == null) return true;
-		else if(this.currentRecipe == null) return false;
 		else return (currentRecipe.getOutputs().get(0).stackSize + output.getStackInSlot(0).stackSize) <= output.getStackInSlot(0).getMaxStackSize()
 				&& ItemHandlerHelper.canItemStacksStack(currentRecipe.getOutputs().get(0),output.getStackInSlot(SLOT_OUTPUT));
 	}
@@ -142,12 +152,6 @@ public class TileMetalAlloyer extends TileMachine {
 	}
 
 	private boolean canAlloy() {
-		System.out.println("========");
-		System.out.println("Matches: " + matchesRecipe());
-		System.out.println("hasConsumable: " + hasConsumable());
-		System.out.println("power: " + (powerCount >= getCookTimeMax()));
-		System.out.println("canOutput: " + canOutput());
-		
 		return  matchesRecipe()
 				&& hasConsumable() 
 				&& powerCount >= getCookTimeMax()

@@ -33,8 +33,7 @@ public class MachineStackHandler extends ItemStackHandler{
 		}
 	}
 
-	//this and setOrIncrement can be consolidated.. just don't feel like picking up the pieces
-	//at the time of writing
+	//this and setOrIncrement can probably be consolidated..
 	public void setOrAdd(int slot, ItemStack stackToSet){
 		ItemStack temp = stackToSet.copy();
 		if(this.getStackInSlot(slot) == null){

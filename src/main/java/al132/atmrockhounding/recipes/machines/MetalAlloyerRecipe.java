@@ -5,25 +5,27 @@ import java.util.Collections;
 import java.util.List;
 
 import al132.atmrockhounding.recipes.IMachineRecipe;
-import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class MetalAlloyerRecipe implements IMachineRecipe{
 
-	private List<ArrayList<ItemStack>> inputs = new ArrayList<ArrayList<ItemStack>>();
-	private ItemStack output;
+	private final List<ArrayList<ItemStack>> inputs;
+	private final ItemStack output;
 
 	public MetalAlloyerRecipe(ItemStack output, ArrayList<ArrayList<ItemStack>> inputs){
 		this.inputs = inputs;
+		this.output = output;
 	}
 
 	@SafeVarargs
 	public MetalAlloyerRecipe(ItemStack output, ArrayList<ItemStack>...inputs){
+		this.inputs = new ArrayList<ArrayList<ItemStack>>();
 		for(int i=0; i<inputs.length; i++){
 			this.inputs.add(inputs[i]);
 		}
+		this.output = output;
 	}
 
 
@@ -51,14 +53,16 @@ public class MetalAlloyerRecipe implements IMachineRecipe{
 
 
 
-	public boolean matches(IItemHandler handler) {
+	public boolean matches(IItemHandler dustHandler) {
 		int matching = 0;
 
-		List<ItemStack> handlerStacks = Utils.handlerToStackList(handler);
+		List<ItemStack> dustStacks = Utils.handlerToStackList(dustHandler);
 
 		for(ArrayList<ItemStack> ingredient: this.inputs){
-			if(Utils.listContainsStackList(handlerStacks, ingredient, true)) {
-				matching++;
+			for(ItemStack ingredientStack: ingredient){
+				if(Utils.listContainsStack(ingredientStack, dustStacks, true)) {
+					matching++;
+				}
 			}
 		}
 		return matching == this.inputs.size();

@@ -20,7 +20,6 @@ public class Utils {
 	}
 
 
-	public static boolean isHandlerEmpty(ItemStackHandler handler){
 		boolean output = true;
 		for(int i = 0; i< handler.getSlots(); i++){
 			if(handler.getStackInSlot(i) != null) output = false;
