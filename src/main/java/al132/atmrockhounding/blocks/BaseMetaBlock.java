@@ -20,7 +20,8 @@ public class BaseMetaBlock extends Block implements IMetaBlockName{
 		setRegistryName(name);
 		setUnlocalizedName(getRegistryName().toString());
 		setCreativeTab(Reference.RockhoundingChemistry);
-		setHardness(hardness); setResistance(resistance);	
+		setHardness(hardness);
+		setResistance(resistance);	
 		setSoundType(stepSound);
 		this.array = array;
 	}
@@ -35,10 +36,12 @@ public class BaseMetaBlock extends Block implements IMetaBlockName{
 		return Item.getItemFromBlock(this);
 	}
 
+	@Override
     public int damageDropped(IBlockState state){
     	return getMetaFromState(state);
     }
 
+    @Override
 	public int quantityDropped(Random rand) {
 		return 1;
 	}

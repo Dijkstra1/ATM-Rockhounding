@@ -1,0 +1,29 @@
+{
+"forge_marker": 1,
+	"defaults": {
+		"model": "forge:fluid"
+	},
+	"variants": {
+		"sulfuric_acid": [
+			{
+				"custom": {
+					"fluid": "sulfuric_acid"
+				}
+			}
+		],
+		"hydrochloric_acid": [
+			{
+				"custom": {
+					"fluid": "hydrochloric_acid"
+				}
+			}
+		],
+		"hydrofluoric_acid": [
+			{
+				"custom": {
+					"fluid": "hydrofluoric_acid"
+				}
+			}
+		]
+	}
+}

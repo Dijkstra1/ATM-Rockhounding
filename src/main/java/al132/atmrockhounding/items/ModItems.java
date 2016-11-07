@@ -4,18 +4,17 @@ import java.util.EnumSet;
 
 import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.enums.EnumAlloy;
-import al132.atmrockhounding.enums.EnumArsenate;
-import al132.atmrockhounding.enums.EnumBorate;
-import al132.atmrockhounding.enums.EnumCarbonate;
 import al132.atmrockhounding.enums.EnumElement;
-import al132.atmrockhounding.enums.EnumHalide;
-import al132.atmrockhounding.enums.EnumNative;
-import al132.atmrockhounding.enums.EnumOxide;
-import al132.atmrockhounding.enums.EnumPhosphate;
-import al132.atmrockhounding.enums.EnumSilicate;
-import al132.atmrockhounding.enums.EnumSulfate;
-import al132.atmrockhounding.enums.EnumSulfide;
-import al132.atmrockhounding.recipes.ModArray;
+import al132.atmrockhounding.enums.shards.EnumArsenate;
+import al132.atmrockhounding.enums.shards.EnumBorate;
+import al132.atmrockhounding.enums.shards.EnumCarbonate;
+import al132.atmrockhounding.enums.shards.EnumHalide;
+import al132.atmrockhounding.enums.shards.EnumNative;
+import al132.atmrockhounding.enums.shards.EnumOxide;
+import al132.atmrockhounding.enums.shards.EnumPhosphate;
+import al132.atmrockhounding.enums.shards.EnumSilicate;
+import al132.atmrockhounding.enums.shards.EnumSulfate;
+import al132.atmrockhounding.enums.shards.EnumSulfide;
 import al132.atmrockhounding.utils.EnumUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -35,7 +34,6 @@ public class ModItems {
 	public static MineralShards sulfideShards;
 	public static ItemMetaBase chemicalDusts;
 
-	public static ChemicalItems chemicalItems;
 	public static ItemMetaBase alloyIngots;
 	public static ItemMetaBase alloyNuggets;
 	public static ItemMetaBase alloyDusts;
@@ -51,6 +49,12 @@ public class ModItems {
 	public static ItemBase flask;
 
 	public static ItemBase sulfuricBeaker;
+	public static ItemBase salt;
+	public static ItemBase sulfurCompound;
+	public static ItemBase sodiumCompound;
+	public static ItemBase fluoriteCompound;
+	public static ItemBase carbonCompound;
+	public static ItemBase crackedCoalCompound;
 
 
 	public static void init(){
@@ -66,7 +70,6 @@ public class ModItems {
 		sulfateShards = new MineralShards("sulfateShards", EnumUtils.getNameArray(EnumSulfate.class));
 		sulfideShards = new MineralShards("sulfideShards", EnumUtils.getNameArray(EnumSulfide.class));
 		chemicalDusts = new ItemMetaBase("chemicalDusts", EnumElement.getNames());
-		chemicalItems = new ChemicalItems("chemicalItems", ModArray.chemicalItemsArray);										
 
 		gear = new ItemConsumable("gear", ModConfig.gearUses);
 		testTube = new ItemConsumable("testTube", ModConfig.tubeUses);
@@ -76,6 +79,14 @@ public class ModItems {
 		heatingElement = new ItemBase("heatingElement");
 		inductionHeatingElement = new ItemBase("inductionHeatingElement");
 		flask = new ItemBase("flask");
+		
+		salt = new ItemBase("salt");
+		sulfurCompound = new ItemBase("sulfurCompound");
+		sodiumCompound = new ItemBase("sodiumCompound");
+		fluoriteCompound = new ItemBase("fluoriteCompound");
+		carbonCompound = new ItemBase("carbonCompound");
+		crackedCoalCompound = new ItemBase("crackedCoalCompound");
+
 
 		alloyDusts = new ItemMetaBase("dust", EnumAlloy.getOreArray("dust"));
 		alloyIngots = new ItemMetaBase("ingot", EnumAlloy.getOreArray("ingot"));
@@ -101,9 +112,7 @@ public class ModItems {
 		for(int i = 0; i < EnumElement.size(); i++){
 			registerMetaItemRender(chemicalDusts, i, EnumElement.getName(i));		
 		}
-		for(int i = 0; i < ModArray.chemicalItemsArray.length; i++){	
-			registerMetaItemRender(chemicalItems, i, ModArray.chemicalItemsArray[i]);
-		}
+
 		
 		EnumSet.allOf(EnumAlloy.class).stream().forEach(x -> {
 			ModItems.registerMetaExperimental(alloyDusts,x.ordinal(),EnumAlloy.getDictName("", x.ordinal()));
@@ -119,6 +128,13 @@ public class ModItems {
 		heatingElement.initModel();
 		inductionHeatingElement.initModel();
 		flask.initModel();
+		salt.initModel();
+		sulfurCompound.initModel();
+		sodiumCompound.initModel();
+		fluoriteCompound.initModel();
+		carbonCompound.initModel();
+		crackedCoalCompound.initModel();
+
 	}
 
 	//wewlad. Overkill for sure. I'm just doing this to learn lambdas/generics

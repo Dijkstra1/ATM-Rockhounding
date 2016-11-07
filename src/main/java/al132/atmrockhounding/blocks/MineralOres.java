@@ -6,8 +6,8 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import al132.atmrockhounding.Reference;
+import al132.atmrockhounding.enums.EnumMineral;
 import al132.atmrockhounding.enums.EnumOres;
-import al132.atmrockhounding.recipes.ModArray;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.SoundType;
@@ -123,7 +123,7 @@ public class MineralOres extends BlockOre implements IMetaBlockName{
 
 	@Override
 	public String getSpecialName(ItemStack stack) {
-		return ModArray.mineralOresArray[stack.getItemDamage()];
+		return EnumMineral.values()[stack.getItemDamage()].getName();
 	}
 
 	@Override

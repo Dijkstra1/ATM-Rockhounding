@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 
 import al132.atmrockhounding.client.GuiHandler;
 import al132.atmrockhounding.items.ModItems;
-import al132.atmrockhounding.recipes.ModArray;
 import al132.atmrockhounding.tile.TileSaltMaker;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -102,7 +101,7 @@ public class SaltMaker extends BaseTileBlock implements IMetaBlockName{
 
 	@Override
 	public String getSpecialName(ItemStack stack) {
-		return ModArray.saltMakerArray[stack.getItemDamage()];
+		return SaltMaker.EnumType.values()[stack.getItemDamage()].toString();
 	}
 
 	public int damageDropped(IBlockState state){
@@ -148,7 +147,7 @@ public class SaltMaker extends BaseTileBlock implements IMetaBlockName{
 				playerIn.playSound(SoundEvents.BLOCK_GRAVEL_HIT, 0.5F, 1.5F);
 				if(!worldIn.isRemote) {
 					int getSalt = new Random().nextInt(saltAmount) + 1; 
-					dropItemStack(worldIn, new ItemStack(ModItems.chemicalItems, getSalt, 1), pos);
+					dropItemStack(worldIn, new ItemStack(ModItems.salt, getSalt, 1), pos);
 				}
 				if(!playerIn.capabilities.isCreativeMode){
 					int damageItem = heldItem.getItemDamage() + 1;

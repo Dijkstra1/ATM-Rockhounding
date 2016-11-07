@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "atmrockhounding:items/cylinder"
+        "layer0": "atmrockhounding:items/sodiumCompound"
     }
 }

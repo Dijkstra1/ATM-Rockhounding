@@ -4,7 +4,9 @@ jei.Analyzer.name=Mineral Analyzer
 jei.alloyer.name=Metal Alloyer
 
 #### FLUID ####
-fluid.sulfuric_acid=Sulfuric Acid
+tile.atmrockhounding:fluid.sulfuric_acid.name=Sulfuric Acid
+tile.atmrockhounding:fluid.hydrochloric_acid.name=Hydrochloric Acid
+tile.atmrockhounding:fluid.hydrofluoric_acid.name=Hydrofluoric Acid
 
 #### GENERAL ####
 itemGroup.rockhoundingChemistry=Rockhounding: Chemistry
@@ -197,13 +199,12 @@ item.atmrockhounding:chemicalDusts.osmium.name=Osmium Dust
 item.atmrockhounding:chemicalDusts.iridium.name=Iridium Dust
 item.atmrockhounding:chemicalDusts.cadmium.name=Cadmium Dust
 #items
-item.atmrockhounding:chemicalItems.tank.name=Chemical Tank
-item.atmrockhounding:chemicalItems.sulfurCompost.name=Sulfur-bearing Compost
-item.atmrockhounding:chemicalItems.saltCompost.name=Sodium Chloride Compost
-item.atmrockhounding:chemicalItems.fluoriteCompost.name=Fluorite-bearing Compost
-item.atmrockhounding:chemicalItems.carbonCompost.name=Carbon Compost
-item.atmrockhounding:chemicalItems.crackedCoal.name=Cracked Coal Compost
-item.atmrockhounding:chemicalItems.salt.name=Salt
+item.atmrockhounding:sulfurCompound.name=Sulfur-bearing Compound
+item.atmrockhounding:sodiumCompound.name=Sodium Chloride Compound
+item.atmrockhounding:fluoriteCompound.name=Fluorite-bearing Compound
+item.atmrockhounding:carbonCompound.name=Carbon Compound
+item.atmrockhounding:crackedCoalCompound.name=Cracked Coal Compound
+item.atmrockhounding:salt.name=Salt
 item.atmrockhounding:itemCabinet.name=Item Cabinet
 item.atmrockhounding:ironNugget.name=Iron Nugget
 item.atmrockhounding:fluidCan.name=Fluid Container

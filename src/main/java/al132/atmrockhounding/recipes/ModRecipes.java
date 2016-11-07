@@ -53,8 +53,7 @@ public class ModRecipes {
 	static ItemStack sulfuricBeaker = new ItemStack(ModItems.sulfuricBeaker);
 
 	static ItemStack flasks = new ItemStack(ModItems.flask);
-	static ItemStack crackedCoal = new ItemStack(ModItems.chemicalItems, 1, 6);
-	static ItemStack chemicalTank = new ItemStack(ModItems.chemicalItems, 1, 0);
+	static ItemStack crackedCoal = new ItemStack(ModItems.crackedCoalCompound);
 
 
 	public static void init() {
@@ -66,7 +65,7 @@ public class ModRecipes {
 
 	
 	public static void loadDictionary()  {
-		OreDictionary.registerOre("dustSalt", new ItemStack(ModItems.chemicalItems, 1, 1));	
+		OreDictionary.registerOre("dustSalt", new ItemStack(ModItems.salt, 1, 1));	
 		OreDictionary.registerOre("itemFluorite", new ItemStack(ModItems.halideShards, 1, 4));	
 		OreDictionary.registerOre("itemPyrite", new ItemStack(ModItems.sulfideShards, 1, 6));	
 
@@ -75,7 +74,7 @@ public class ModRecipes {
 		}
 
 		for(int x = 0; x < EnumAlloy.size(); x++){
-			OreDictionary.registerOre(EnumAlloy.getDictName("blocks", x), new ItemStack(ModBlocks.alloyBlocks, 1, x));
+			OreDictionary.registerOre(EnumAlloy.getDictName("block", x), new ItemStack(ModBlocks.alloyBlocks, 1, x));
 			OreDictionary.registerOre(EnumAlloy.getDictName("dust",x), new ItemStack(ModItems.alloyDusts, 1, x));	
 			OreDictionary.registerOre(EnumAlloy.getDictName("ingot",x), new ItemStack(ModItems.alloyIngots, 1, x));	
 			OreDictionary.registerOre(EnumAlloy.getDictName("nugget",x), new ItemStack(ModItems.alloyNuggets, 1, x));	
@@ -88,12 +87,12 @@ public class ModRecipes {
 		sizerRecipes.add(new MineralSizerRecipe(ModBlocks.mineralOres,null));
 		//sizerRecipes.add(new MineralSizerRecipe(Items.IRON_INGOT, 0, ModItems.chemicalDusts,16)); //iron dust
 		//sizerRecipes.add(new MineralSizerRecipe(Items.GOLD_INGOT,0, ModItems.chemicalDusts,45)); //gold dust
-		sizerRecipes.add(new MineralSizerRecipe(Blocks.STONE,1, ModItems.chemicalItems,4)); //fuorite dust
+		sizerRecipes.add(new MineralSizerRecipe(Blocks.STONE,1, ModItems.fluoriteCompound,0)); //fuorite dust
 
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.chemicalItems,2, EnumFluid.WATER, EnumFluid.SULFURIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.chemicalItems,3, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROCHLORIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.chemicalItems,4, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROFLUORIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.chemicalItems,5, EnumFluid.WATER, EnumFluid.SYNGAS));
+		labOvenRecipes.add(new LabOvenRecipe(ModItems.sulfurCompound,0, EnumFluid.WATER, EnumFluid.SULFURIC_ACID));
+		labOvenRecipes.add(new LabOvenRecipe(ModItems.sodiumCompound,0, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROCHLORIC_ACID));
+		labOvenRecipes.add(new LabOvenRecipe(ModItems.fluoriteCompound,0, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROFLUORIC_ACID));
+		labOvenRecipes.add(new LabOvenRecipe(ModItems.carbonCompound,0, EnumFluid.WATER, EnumFluid.SYNGAS));
 
 
 		//TODO find a more readable way to do this
@@ -237,10 +236,10 @@ public class ModRecipes {
 				}
 			}
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.alloyIngots, 1, x ), new Object[] { "XXX", "XXX", "XXX", 'X', EnumAlloy.getDictName("nugget",x)}));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyIngots, 9, x), new Object[] { EnumAlloy.getDictName("blocks", x)}));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyIngots, 9, x), new Object[] { EnumAlloy.getDictName("block", x)}));
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyNuggets, 9, x), new Object[] { new ItemStack(ModItems.alloyIngots,1,x).getItem() }));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBlocks, 1, x), new Object[] { "XXX", "XXX", "XXX", 'X', new ItemStack(ModItems.alloyIngots,1,x) }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBricks, 4, x), new Object[] { "XX", "XX", 'X', EnumAlloy.getDictName("blocks", x)}));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBricks, 4, x), new Object[] { "XX", "XX", 'X', EnumAlloy.getDictName("block", x)}));
 		}
 
 		//lab oven
@@ -256,8 +255,6 @@ public class ModRecipes {
 		//metal alloyer
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.metalAlloyer), new Object[] { "bFb", "III", "ITI", 'I', "ingotIron", 'F', Blocks.FURNACE, 'b', Items.BOWL, 'T', Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE }));
 
-		//chemical tank
-		GameRegistry.addRecipe(new ShapedOreRecipe(chemicalTank, new Object[] { "GCG", "G G", "GGG", 'G', "blockGlass", 'C', flask }));
 		//cylinder
 		GameRegistry.addRecipe(new ShapedOreRecipe(cylinder, new Object[] { " G "," G ","GGG", 'G', "blockGlass" }));
 		//gear
@@ -278,26 +275,26 @@ public class ModRecipes {
 		GameRegistry.addRecipe(new ShapedOreRecipe(inductor, new Object[] { "III", "HHH", "III", 'I', "ingotIron", 'H', heatingElement}));
 
 		//sulfur compost
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 2), new Object[] { flask, "dustSulfur", "dustSulfur", "dustSulfur" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 2), new Object[] { flask, "gunpowder" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 2), new Object[] { flask, "itemPyrite", "itemPyrite", "itemPyrite" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 2), new Object[] { flask, "itemAnthracite", "itemAnthracite", "itemAnthracite" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 4, 2), new Object[] { flask, "itemBituminous", "itemBituminous", "itemBituminous" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 2, 2), new Object[] { flask, "itemLignite", "itemLignite", "itemLignite" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 8), new Object[] { flask, "dustSulfur", "dustSulfur", "dustSulfur" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 8), new Object[] { flask, "gunpowder" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 8), new Object[] { flask, "itemPyrite", "itemPyrite", "itemPyrite" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 8), new Object[] { flask, "itemAnthracite", "itemAnthracite", "itemAnthracite" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 4), new Object[] { flask, "itemBituminous", "itemBituminous", "itemBituminous" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sulfurCompound, 2), new Object[] { flask, "itemLignite", "itemLignite", "itemLignite" }));
 		//sodium chloride compost
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 3), new Object[] { flask, "dustSalt", "dustSalt", "dustSalt" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 3), new Object[] { flask, "itemSalt", "itemSalt", "itemSalt" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sodiumCompound, 8), new Object[] { flask, "dustSalt", "dustSalt", "dustSalt" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.sodiumCompound, 8), new Object[] { flask, "itemSalt", "itemSalt", "itemSalt" }));
 		//fluorite compost
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 4), new Object[] { flask, "dustFluorite", "dustFluorite", "dustFluorite" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 8, 4), new Object[] { flask, "itemFluorite", "itemFluorite", "itemFluorite" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.fluoriteCompound, 8), new Object[] { flask, "dustFluorite", "dustFluorite", "dustFluorite" }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.fluoriteCompound, 8), new Object[] { flask, "itemFluorite", "itemFluorite", "itemFluorite" }));
 		//cracked coal
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 1, 6), new Object[] { flask, Items.COAL, Items.COAL, Items.COAL }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 4, 6), new Object[] { flask, "blockAnthracite"}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 3, 6), new Object[] { flask, "blockBituminous"}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 2, 6), new Object[] { flask, "blockcCoal"}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 1, 6), new Object[] { flask, "blockLignite"}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.crackedCoalCompound, 1), new Object[] { flask, Items.COAL, Items.COAL, Items.COAL }));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.crackedCoalCompound, 4), new Object[] { flask, "blockAnthracite"}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.crackedCoalCompound, 3), new Object[] { flask, "blockBituminous"}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.crackedCoalCompound, 2), new Object[] { flask, "blockcCoal"}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.crackedCoalCompound, 1), new Object[] { flask, "blockLignite"}));
 		//carbon compost
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.chemicalItems, 1, 5), new Object[] { crackedCoal, crackedCoal, crackedCoal, crackedCoal}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.carbonCompound, 1), new Object[] { crackedCoal, crackedCoal, crackedCoal, crackedCoal}));
 		//force smelting
 		if(ModConfig.forceSmelting){
 			for(int x = 0; x < EnumElement.size(); x++){

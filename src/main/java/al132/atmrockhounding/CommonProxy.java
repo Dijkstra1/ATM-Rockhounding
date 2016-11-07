@@ -4,8 +4,8 @@ import al132.atmrockhounding.blocks.ModBlocks;
 import al132.atmrockhounding.client.GuiHandler;
 import al132.atmrockhounding.compat.crafttweaker.CTPlugin;
 import al132.atmrockhounding.compat.crafttweaker.utils.TweakerPlugin;
+import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
-import al132.atmrockhounding.recipes.ModArray;
 import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.world.ChemOresGenerator;
 import net.minecraft.block.Block;
@@ -22,15 +22,11 @@ public class CommonProxy {
 		// Load Config
 		ModConfig.loadConfig(e);
 
-		// Load Arrays
-		ModArray.loadArray();
-
 		// Register Contents
 		ModBlocks.init();
 		ModBlocks.register();
 		ModItems.init();
-
-		//ModFluids.init();
+		ModFluids.registerFluidContainers();
 	}
 
 	public void init(FMLInitializationEvent e) {

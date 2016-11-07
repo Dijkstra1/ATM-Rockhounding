@@ -48,7 +48,7 @@ public class TileMineralAnalyzer extends TileMachine {
 				if(slot == CONSUMABLE_SLOT && insertingStack.getItem() == ModItems.testTube){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == SULFUR_SLOT && fluidName.equals("Sulfuric Acid") && ItemStack.areItemsEqual(insertingStack, new ItemStack(ModItems.chemicalItems,1,0))){
+			/*	if(slot == SULFUR_SLOT && fluidName.equals("Sulfuric Acid") && ItemStack.areItemsEqual(insertingStack, new ItemStack(ModItems.chemicalItems,1,0))){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == CHLOR_SLOT && fluidName.equals("Hydrochloric Acid") && ItemStack.areItemsEqual(insertingStack, new ItemStack(ModItems.chemicalItems,1,0))){
@@ -57,7 +57,7 @@ public class TileMineralAnalyzer extends TileMachine {
 				if(slot == FLUO_SLOT && fluidName.equals("Hydrofluoric Acid") && ItemStack.areItemsEqual(insertingStack, new ItemStack(ModItems.chemicalItems,1,0))){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == INDUCTOR_SLOT && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
+				*/if(slot == INDUCTOR_SLOT && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 
@@ -182,8 +182,9 @@ public class TileMineralAnalyzer extends TileMachine {
 	}
 
 	private boolean hasTank(int acidSlot) {
-		return input.getStackInSlot(acidSlot) != null && input.getStackInSlot(acidSlot).getItem() == ModItems.chemicalItems && input.getStackInSlot(acidSlot).getItemDamage() == 0;
+		return false;
 	}
+	
 	private boolean hasAcid(int acidSlot, EnumFluid acidType, int acidConsumed) {
 		if(hasTank(acidSlot)){
 			if(input.getStackInSlot(acidSlot).hasTagCompound()){

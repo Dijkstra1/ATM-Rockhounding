@@ -7,11 +7,14 @@ import net.minecraft.item.ItemStack;
 public class TiersIB extends ItemBlock {
 	public TiersIB(Block block) {
         super(block);
-        if (!(block instanceof IMetaBlockName)) {
-            throw new IllegalArgumentException(String.format("The given Block %s is not an instance of ISpecialBlockName!", block.getUnlocalizedName()));
-        }
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
+	}
+	
+	@Override
+	public int getMetadata(int meta)
+	{
+		return meta;
 	}
 
     @Override

@@ -212,7 +212,7 @@ public class TileChemicalExtractor extends TileMachine {
 	}
 
 	private boolean hasTank(int slot) {
-		return ItemStack.areItemsEqual(input.getStackInSlot(slot), new ItemStack(ModItems.chemicalItems));
+		return false;
 	}
 
 	private boolean hasEnoughAcid(int acidSlot, EnumFluid acidType, int acidConsumed) {

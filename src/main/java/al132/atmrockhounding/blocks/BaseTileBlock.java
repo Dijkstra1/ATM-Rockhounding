@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import al132.atmrockhounding.ATMRockhounding;
 import al132.atmrockhounding.tile.TileInv;
+import al132.atmrockhounding.tile.TileLabOven;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -18,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -28,6 +30,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,6 +57,8 @@ public class BaseTileBlock extends BaseBlock implements ITileEntityProvider{
 		return false;
 	}
 
+
+
 	@SideOnly(Side.CLIENT)
 	public void initModel() {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
@@ -70,7 +75,7 @@ public class BaseTileBlock extends BaseBlock implements ITileEntityProvider{
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state){
 		this.setDefaultFacing(worldIn, pos, state);
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		try {
@@ -103,24 +108,32 @@ public class BaseTileBlock extends BaseBlock implements ITileEntityProvider{
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote)
-		{
+		if (!world.isRemote) {
+			if(world.getTileEntity(pos) instanceof TileLabOven){
+				if (heldItem != null){
+					if (heldItem.getItem() instanceof ItemBucket || heldItem.getItem() instanceof UniversalBucket){
+						((TileLabOven)world.getTileEntity(pos)).interactWithBucket(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
+						return true;
+					}
+				}
+			}
+			
 			player.openGui(ATMRockhounding.instance, guiID, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
 
-    @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
-    }
+	@Override
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+	}
 
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
-    }
-    
-    @Override
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+		worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
+	}
+
+	@Override
 	public boolean hasComparatorInputOverride(IBlockState state){
 		return true;
 	}
@@ -130,37 +143,37 @@ public class BaseTileBlock extends BaseBlock implements ITileEntityProvider{
 		return Container.calcRedstone(worldIn.getTileEntity(pos));
 	}
 
-    public EnumBlockRenderType getRenderType(IBlockState state){
-        return EnumBlockRenderType.MODEL;
-    }
-    
-    @Override
-    public IBlockState getStateFromMeta(int meta){
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y){
-            enumfacing = EnumFacing.NORTH;
-        }
-        return this.getDefaultState().withProperty(FACING, enumfacing);
-    }
+	public EnumBlockRenderType getRenderType(IBlockState state){
+		return EnumBlockRenderType.MODEL;
+	}
 
-    @Override
-    public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
-    }
+	@Override
+	public IBlockState getStateFromMeta(int meta){
+		EnumFacing enumfacing = EnumFacing.getFront(meta);
+		if (enumfacing.getAxis() == EnumFacing.Axis.Y){
+			enumfacing = EnumFacing.NORTH;
+		}
+		return this.getDefaultState().withProperty(FACING, enumfacing);
+	}
 
-    @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot){
-        return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
-    }
+	@Override
+	public int getMetaFromState(IBlockState state){
+		return ((EnumFacing)state.getValue(FACING)).getIndex();
+	}
 
-    @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn){
-        return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
-    }
+	@Override
+	public IBlockState withRotation(IBlockState state, Rotation rot){
+		return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
+	}
 
-    @Override
-    public BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] {FACING});
-    }
+	@Override
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn){
+		return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockStateContainer createBlockState(){
+		return new BlockStateContainer(this, new IProperty[] {FACING});
+	}
 
 }

@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import al132.atmrockhounding.client.gui.GuiMineralAnalyzer;
 import al132.atmrockhounding.compat.jei.RHRecipeCategory;
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
-import al132.atmrockhounding.items.ChemicalItems;
 import al132.atmrockhounding.items.ModItems;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -56,9 +55,9 @@ public class AnalyzerRecipeCategory extends RHRecipeCategory {
 		guiItemStacks.set(INPUT_SLOT, wrapper.getInputs());
 		guiItemStacks.set(OUTPUT_SLOT, wrapper.getOutputs());
 	
-		guiItemStacks.set(SULFURIC_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Sulfuric Acid", 100));
-		guiItemStacks.set(CHLOR_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrochloric Acid", 100));
-		guiItemStacks.set(FLUO_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrofluoric Acid", 100));
+		//guiItemStacks.set(SULFURIC_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Sulfuric Acid", 100));
+		//guiItemStacks.set(CHLOR_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrochloric Acid", 100));
+		//guiItemStacks.set(FLUO_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrofluoric Acid", 100));
 	}
 
 	@Override

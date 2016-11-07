@@ -1,6 +1,7 @@
 package al132.atmrockhounding;
 
 
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -17,6 +18,11 @@ public class ATMRockhounding {
 
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
+
+	static {
+		FluidRegistry.enableUniversalBucket();
+	}
+
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
