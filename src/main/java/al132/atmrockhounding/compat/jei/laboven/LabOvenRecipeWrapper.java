@@ -1,4 +1,4 @@
-package al132.atmrockhounding.compat.jei.sizer;
+package al132.atmrockhounding.compat.jei.laboven;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,13 +7,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import al132.atmrockhounding.compat.jei.RHRecipeWrapper;
-import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
+import al132.atmrockhounding.recipes.machines.LabOvenRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
-public class SizerRecipeWrapper extends RHRecipeWrapper<MineralSizerRecipe> {
+public class LabOvenRecipeWrapper extends RHRecipeWrapper<LabOvenRecipe> {
 	
-	public SizerRecipeWrapper(@Nonnull MineralSizerRecipe recipe) {
+	public LabOvenRecipeWrapper(@Nonnull LabOvenRecipe recipe) {
 		super(recipe);
 	}
 
@@ -21,21 +22,23 @@ public class SizerRecipeWrapper extends RHRecipeWrapper<MineralSizerRecipe> {
 	@Override
 	public List<ItemStack> getInputs() {
 		List<ItemStack> inputs = new ArrayList<ItemStack>();
-		inputs.addAll(getRecipe().getInputs());
+		inputs.add(getRecipe().getSolute());
 		return inputs;
 	}
 
-	@Nonnull
 	@Override
-	public List<ItemStack> getOutputs() {
-		ArrayList<ItemStack> output = new ArrayList<ItemStack>();
-		if(getRecipe().getOutputs() != null) return getRecipe().getOutputs();
+	public List<FluidStack> getFluidInputs(){
+		return Collections.singletonList(getRecipe().getSolvent());
+	}
+
+	@Override
+	public List<FluidStack> getFluidOutputs(){
 		return Collections.singletonList(getRecipe().getOutput());
 	}
 
 	@Override
 	public void getIngredients(IIngredients ingredients) {
-		
+		// TODO Auto-generated method stub
 		
 	}
 

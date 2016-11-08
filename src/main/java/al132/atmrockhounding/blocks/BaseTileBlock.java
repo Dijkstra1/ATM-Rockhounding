@@ -3,8 +3,8 @@ package al132.atmrockhounding.blocks;
 import javax.annotation.Nullable;
 
 import al132.atmrockhounding.ATMRockhounding;
+import al132.atmrockhounding.tile.IFluidHandlingTile;
 import al132.atmrockhounding.tile.TileInv;
-import al132.atmrockhounding.tile.TileLabOven;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -109,10 +109,11 @@ public class BaseTileBlock extends BaseBlock implements ITileEntityProvider{
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote) {
-			if(world.getTileEntity(pos) instanceof TileLabOven){
+			if(world.getTileEntity(pos) instanceof IFluidHandlingTile){
 				if (heldItem != null){
 					if (heldItem.getItem() instanceof ItemBucket || heldItem.getItem() instanceof UniversalBucket){
-						((TileLabOven)world.getTileEntity(pos)).interactWithBucket(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
+						((IFluidHandlingTile)world.getTileEntity(pos)).interactWithBucket(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
+
 						return true;
 					}
 				}

@@ -3,8 +3,6 @@ package al132.atmrockhounding.tile;
 import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.gui.GuiLabOven;
-import al132.atmrockhounding.enums.EnumFluid;
-import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.recipes.machines.LabOvenRecipe;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
@@ -12,6 +10,7 @@ import al132.atmrockhounding.utils.FuelUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,11 +19,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 
-public class TileLabOven extends TileMachine {
+public class TileLabOven extends TileMachine implements IFluidHandlingTile{
 
 	private int redstoneCharge = this.getCookTimeMax();
 
@@ -35,106 +37,109 @@ public class TileLabOven extends TileMachine {
 	public static final int OUTPUT_SLOT = 3;
 	public static final int REDSTONE_SLOT = 4;
 
-	protected FluidTank inputTank;
-	protected FluidTank outputTank;
+	public FluidTank inputTank;
+	public FluidTank outputTank;
+	LabOvenRecipe currentRecipe;
 
 	public TileLabOven() {
 		super(7, 0, 1);
 
-
-		
-		inputTank = new FluidTank(Fluid.BUCKET_VOLUME);
+		inputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10){
+			@Override
+			public boolean canFillFluidType(FluidStack fluid)
+			{
+				return solventHasRecipe(fluid);
+			}
+		};
 		inputTank.setTileEntity(this);
 		inputTank.setCanFill(true);
-		
-		outputTank = new FluidTank(Fluid.BUCKET_VOLUME);
+		inputTank.setCanDrain(false);
+
+		outputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
 		outputTank.setTileEntity(this);
+		outputTank.setCanDrain(true);
+		outputTank.setCanFill(false);
 
 		input =  new MachineStackHandler(INPUT_SLOTS,this){
 			@Override
 			public ItemStack insertItem(int slot, ItemStack insertingStack, boolean simulate){
-				if(slot == SOLUTE_SLOT && isCorrectSolute(insertingStack)){
+				if(slot == SOLUTE_SLOT && soluteHasRecipe(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == SOLVENT_SLOT && isCorrectSolvent(insertingStack)){
+				if(slot == SOLVENT_SLOT 
+						&& solventHasRecipe(FluidUtil.getFluidContained(insertingStack))){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
+
 				if(slot == REDSTONE_SLOT &&
 						(insertingStack.getItem() == Items.REDSTONE || (insertingStack.isItemEqual(Reference.inductor)))){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				/*if(slot == OUTPUT_SLOT && ItemStack.areItemsEqual(insertingStack, new ItemStack(ModItems.chemicalItems,1,0)) && isValidTank(insertingStack)){
+				if(slot == OUTPUT_SLOT && ItemStack.areItemsEqual(insertingStack, new ItemStack(Items.BUCKET))){
 					return super.insertItem(slot, insertingStack, simulate);
-				}*/
+				}
 				return insertingStack;
 			}
 		};
 
 		automationInput = new WrappedItemHandler(input,WriteMode.IN_OUT);
+		this.markDirtyClient();
 	}
 
 	public int getCookTimeMax(){
 		return ModConfig.speedLabOven;
 	}
-	
-	public FluidTank getInputTank(){
-		return this.inputTank;
-	}
-
 
 	public boolean interactWithBucket(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
 			ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 
 		boolean didFill = FluidUtil.interactWithFluidHandler(heldItem, this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side), player);
-		this.markDirty();
-		world.notifyBlockUpdate(pos, state, world.getBlockState(pos), 8);
+		this.markDirtyClient();
 		return didFill;
 	}
 
-	private boolean isCorrectSolute(ItemStack stack) {
-		return false;
+	public static boolean soluteHasRecipe(ItemStack insertingStack){
+		return ModRecipes.labOvenRecipes.stream().anyMatch(
+				recipe -> ItemStack.areItemsEqual(recipe.getSolute(), insertingStack));
 	}
 
-	public boolean isCorrectSolvent(ItemStack stack){
-		return false;
-	}
-
-	public boolean isValidTank(ItemStack stack){
-		return false;
-	}
-
-	public EnumFluid getFluidOutput(){
-		for(LabOvenRecipe recipe: ModRecipes.labOvenRecipes){
-			if(ItemStack.areItemsEqual(recipe.getSolute(),input.getStackInSlot(SOLUTE_SLOT))){
-				return recipe.getOutput();
-			}
-		}
-		return null;
+	public static boolean solventHasRecipe(FluidStack insertingStack){
+		return ModRecipes.labOvenRecipes.stream().anyMatch(
+				recipe -> recipe.getSolvent().equals(insertingStack));
 	}
 
 
-	public boolean isBurning(){
-		return this.canSynthesize();
+
+	public boolean hasOutputSlotBucket(){
+		return ItemStack.areItemsEqual(new ItemStack(Items.BUCKET), input.getStackInSlot(OUTPUT_SLOT));
 	}
+
 
 	//----------------------- I/O -----------------------
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
 		this.cookTime = compound.getInteger("CookTime");
-		this.inputTank.readFromNBT(compound);
-		this.outputTank.readFromNBT(compound);
+		this.inputTank.readFromNBT(compound.getCompoundTag("InputTank"));
+		this.outputTank.readFromNBT(compound.getCompoundTag("OutputTank"));
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		super.writeToNBT(compound);
 		compound.setInteger("CookTime", this.cookTime);
-		this.inputTank.writeToNBT(compound);
-		this.outputTank.writeToNBT(compound);
+
+		NBTTagCompound inputTankNBT = new NBTTagCompound();
+		this.inputTank.writeToNBT(inputTankNBT);
+		compound.setTag("InputTank", inputTankNBT);
+
+		NBTTagCompound outputTankNBT = new NBTTagCompound();
+		this.outputTank.writeToNBT(outputTankNBT);
+		compound.setTag("OutputTank", outputTankNBT);
+
 		return compound;
 	}
 
@@ -143,19 +148,38 @@ public class TileLabOven extends TileMachine {
 
 	@Override
 	public void update(){
-
 		if(input.getStackInSlot(FUEL_SLOT) != null){fuelHandler();}
 		if(input.getStackInSlot(REDSTONE_SLOT) != null){redstoneHandler();}
+
 		if(!worldObj.isRemote){
+			
+			if( FluidUtil.getFluidContained(input.getStackInSlot(SOLVENT_SLOT)) != null){
+				if(FluidUtil.tryEmptyContainer(input.getStackInSlot(SOLVENT_SLOT), inputTank, 1000, null, false) != null){
+					input.setStackInSlot(SOLVENT_SLOT,FluidUtil.tryEmptyContainer(input.getStackInSlot(SOLVENT_SLOT), inputTank, 1000, null, true));
+				}
+			}
+
 			if(canSynthesize()){
 				execute();
 			}
-			this.markDirtyClient();
+
+			if(hasOutputSlotBucket() && outputTank.getFluidAmount() >= 1000){
+				if(null != FluidUtil.tryFillContainer(input.getStackInSlot(OUTPUT_SLOT), outputTank, 1000, null, false)){
+					input.setStackInSlot(OUTPUT_SLOT,FluidUtil.tryFillContainer(input.getStackInSlot(OUTPUT_SLOT), outputTank, 1000, null, true));
+				}
+			}
 		}
+		this.markDirtyClient();
 	}
 
 	public boolean canSynthesize(){
-		return false;
+		currentRecipe = ModRecipes.labOvenRecipes.stream().filter(recipe -> 
+		ItemStack.areItemsEqual(recipe.getSolute(), input.getStackInSlot(SOLUTE_SLOT))
+		&& inputTank.getFluid().containsFluid(recipe.getSolvent())).findAny().orElse(null);
+
+		return currentRecipe != null
+				&& this.getRedstone() >= this.getCookTimeMax()
+				&& this.getPower() >= this.getCookTimeMax();
 	}
 
 	private void execute() {
@@ -164,29 +188,17 @@ public class TileLabOven extends TileMachine {
 		redstoneCount --; 
 		if(cookTime >= getCookTimeMax()) {
 			cookTime = 0; 
-			handleOutput(getFluidOutput());
+			handleOutput();
+			currentRecipe = null;
 		}
 	}
 
-	private boolean stackHasFluid(ItemStack stack, EnumFluid fluid){
-		if(stack != null){
-			if(stack.hasTagCompound()){
-				if(stack.getTagCompound().getString("Fluid").equals(fluid.getName())){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 
-	private void handleOutput(EnumFluid fluidOutput) {
-		int quantity = 0;
+	private void handleOutput() {
+
 		input.decrementSlot(SOLUTE_SLOT);
-		input.decrementFluid(SOLVENT_SLOT);
-		//add output
-		quantity = input.getStackInSlot(OUTPUT_SLOT).getTagCompound().getInteger("Quantity") + 1;
-		input.getStackInSlot(OUTPUT_SLOT).getTagCompound().setString("Fluid", fluidOutput.getName());
-		input.getStackInSlot(OUTPUT_SLOT).getTagCompound().setInteger("Quantity", quantity);
+		inputTank.getFluid().amount -= 500;
+		outputTank.fillInternal(currentRecipe.getOutput(), true);
 	}
 
 
@@ -215,10 +227,14 @@ public class TileLabOven extends TileMachine {
 		else return super.hasCapability(capability, facing);
 	}
 
+	public FluidHandlerConcatenate getCombinedTank(){
+		return new FluidHandlerConcatenate(inputTank,outputTank);
+	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return (T) inputTank;
+			return (T) getCombinedTank();
 		return super.getCapability(capability, facing);
 	}
 }

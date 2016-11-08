@@ -18,7 +18,6 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class TileMetalAlloyer extends TileMachine {
 
-
 	public static final int SLOT_INPUTS[] = new int[]{0,1,2,3,4,5,5};
 	//public static final int SLOT_FUEL = 6;
 	public static final int SLOT_CONSUMABLE = 7;

@@ -7,8 +7,10 @@ import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.container.ContainerChemicalExtractor;
 import al132.atmrockhounding.tile.TileChemicalExtractor;
+import al132.atmrockhounding.utils.RenderUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -36,17 +38,40 @@ public class GuiChemicalExtractor extends GuiBase {
        super.drawScreen(mouseX, mouseY, f);
 	   int x = (this.width - this.xSize) / 2;
 	   int y = (this.height - this.ySize) / 2;
-	   //bars progression (fuel-redstone)
-	   if(mouseX >= 11+x && mouseX <= 20+x && mouseY >= 40+y && mouseY <= 89+y){
+	   //fuel
+	   if(mouseX >= 11+x && mouseX <= 21+x && mouseY >= 28+y && mouseY <= 78+y){
 		   String[] text = {this.chemicalExtractor.powerCount + "/" + this.chemicalExtractor.powerMax + " ticks"};
 		   List<String> tooltip = Arrays.asList(text);
 		   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 	   }
-	   if(mouseX >= 31+x && mouseX <= 40+x && mouseY >= 40+y && mouseY <= 89+y){
+	   //redstone
+	   if(mouseX >= 31+x && mouseX <= 41+x && mouseY >= 28+y && mouseY <= 78+y){
 		   String[] text = {this.chemicalExtractor.redstoneCount + "/" + this.chemicalExtractor.redstoneMax + " RF"};
 		   List<String> tooltip = Arrays.asList(text);
 		   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 	   }
+	   
+		//syngas tank
+		if(mouseX>= 8+x && mouseX <= 24+x && mouseY >= 109+y && mouseY <= 169+y){
+			int fluidAmount = 0;
+			if(chemicalExtractor.syngasTank.getFluid() != null){
+				fluidAmount = this.chemicalExtractor.syngasTank.getFluidAmount();
+			}
+			String[] text = {fluidAmount + "/" + this.chemicalExtractor.syngasTank.getCapacity() + " mb","Syngas"};
+			List<String> tooltip = Arrays.asList(text);
+			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+		}
+		
+		//fluo tank
+		if(mouseX>= 28+x && mouseX <= 44+x && mouseY >= 109+y && mouseY <= 169+y){
+			int fluidAmount = 0;
+			if(chemicalExtractor.fluoTank.getFluid() != null){
+				fluidAmount = this.chemicalExtractor.fluoTank.getFluidAmount();
+			}
+			String[] text = {fluidAmount + "/" + this.chemicalExtractor.fluoTank.getCapacity() + " mb","Hydrofluoric Acid"};
+			List<String> tooltip = Arrays.asList(text);
+			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+		}
     }
 
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY){
@@ -54,8 +79,6 @@ public class GuiChemicalExtractor extends GuiBase {
 		
         String device = "Chemical Extractor";
         this.fontRendererObj.drawString(device, this.xSize / 2 - this.fontRendererObj.getStringWidth(device) / 2, 6, 4210752);
-
-        this.fontRendererObj.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
     }
 
     public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY){
@@ -63,15 +86,15 @@ public class GuiChemicalExtractor extends GuiBase {
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
-        //power bar
+        //fuel bar
         if (this.chemicalExtractor.powerCount > 0){
 	        int k = this.getBarScaled(50, this.chemicalExtractor.powerCount, this.chemicalExtractor.powerMax);
-            this.drawTexturedModalRect(i + 11, j + 40 + (50 - k), 246, 0, 10, k);
+            this.drawTexturedModalRect(i + 11, j + 28 + (50 - k), 246, 0, 10, k);
         }
         //redstone bar
         if (this.chemicalExtractor.redstoneCount > 0){
 	        int k = this.getBarScaled(50, this.chemicalExtractor.redstoneCount, this.chemicalExtractor.redstoneMax);
-            this.drawTexturedModalRect(i + 31, j + 40 + (50 - k), 246, 109, 10, k);
+            this.drawTexturedModalRect(i + 31, j + 28 + (50 - k), 246, 109, 10, k);
         }
         //smelt bar
         int k = this.getBarScaled(36, this.chemicalExtractor.cookTime, this.chemicalExtractor.getCookTimeMax());
@@ -83,6 +106,24 @@ public class GuiChemicalExtractor extends GuiBase {
 		        int cab = this.getBarScaled(19, this.chemicalExtractor.elementList[slotID], ModConfig.factorExtractor);
 				if(cab > 19){cab = 19;}
 				this.drawTexturedModalRect(i + 100 + (19 * vSlot), j + 19 + (21 * hSlot), 245, 89, 4, 19 - cab);
+			}
+		}
+		
+		if(chemicalExtractor.syngasTank.getFluid() != null){
+			FluidStack temp = chemicalExtractor.syngasTank.getFluid();
+			int capacity = chemicalExtractor.syngasTank.getCapacity();
+			if(temp.amount > 5){
+				RenderUtils.bindBlockTexture();
+				RenderUtils.renderGuiTank(temp,capacity, temp.amount, i + 8, j + 109, zLevel, 16, 60);
+			}
+		}
+		
+		if(chemicalExtractor.fluoTank.getFluid() != null){
+			FluidStack temp = chemicalExtractor.fluoTank.getFluid();
+			int capacity = chemicalExtractor.fluoTank.getCapacity();
+			if(temp.amount > 5){
+				RenderUtils.bindBlockTexture();
+				RenderUtils.renderGuiTank(temp,capacity, temp.amount, i + 28, j + 109, zLevel, 16, 60);
 			}
 		}
     }

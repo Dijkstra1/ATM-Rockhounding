@@ -19,13 +19,11 @@ public class ContainerLabOven extends ContainerBase<TileLabOven> {
 	protected void addOwnSlots() {
 		IItemHandler input = tile.getInput();
 
-		this.addSlotToContainer(new SlotItemHandler(input, 0, 44, 59));//input solute
-		this.addSlotToContainer(new SlotItemHandler(input, 1, 8, 20));//fuel
-		this.addSlotToContainer(new SlotItemHandler(input, 2, 116, 59));//input solvent
-		this.addSlotToContainer(new SlotItemHandler(input, 3, 80, 59));//output
-		this.addSlotToContainer(new SlotItemHandler(input, 4, 152, 20));//input redstone
-		this.addSlotToContainer(new SlotItemHandler(input, 5, 28, 20));//Previous recipe
-		this.addSlotToContainer(new SlotItemHandler(input, 6, 132, 20));//Next recipe
+		this.addSlotToContainer(new SlotItemHandler(input, 0, 46, 70));//input solute
+		this.addSlotToContainer(new SlotItemHandler(input, 1, 8, 54));//fuel
+		this.addSlotToContainer(new SlotItemHandler(input, 2, 148, 23));//input solvent
+		this.addSlotToContainer(new SlotItemHandler(input, 3, 118, 103));//output
+		this.addSlotToContainer(new SlotItemHandler(input, 4, 27, 6));//input redstone
 
 	}
 }

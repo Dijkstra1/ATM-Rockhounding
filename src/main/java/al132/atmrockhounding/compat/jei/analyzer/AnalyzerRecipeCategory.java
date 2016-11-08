@@ -5,14 +5,19 @@ import javax.annotation.Nonnull;
 import al132.atmrockhounding.client.gui.GuiMineralAnalyzer;
 import al132.atmrockhounding.compat.jei.RHRecipeCategory;
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
+import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
+import al132.atmrockhounding.tile.TileMineralAnalyzer;
+import al132.atmrockhounding.utils.RenderUtils;
 import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 public class AnalyzerRecipeCategory extends RHRecipeCategory {
 
@@ -28,7 +33,7 @@ public class AnalyzerRecipeCategory extends RHRecipeCategory {
 	private final static ResourceLocation guiTexture = GuiMineralAnalyzer.TEXTURE_REF;
 
 	public AnalyzerRecipeCategory(IGuiHelper guiHelper) {
-		super(guiHelper.createDrawable(guiTexture, 40, 16, 130, 75), "jei.Analyzer.name");
+		super(guiHelper.createDrawable(guiTexture, 26, 16, 143, 85), "jei.Analyzer.name");
 	}
 
 	@Nonnull
@@ -39,25 +44,28 @@ public class AnalyzerRecipeCategory extends RHRecipeCategory {
 
 	@Override
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+
+		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+		guiFluidStacks.init(0, true, 79, 20, 16, 60, 100, false, null);
+		guiFluidStacks.init(1, true, 101,20, 16, 60, 100, false, null);
+		guiFluidStacks.init(2, true, 123,20, 16, 60, 100, false, null);
+		
+		guiFluidStacks.set(0, new FluidStack(ModFluids.SULFURIC_ACID,TileMineralAnalyzer.consumedSulf));
+		guiFluidStacks.set(1, new FluidStack(ModFluids.HYDROCHLORIC_ACID,TileMineralAnalyzer.consumedChlo));
+		guiFluidStacks.set(2, new FluidStack(ModFluids.HYDROFLUORIC_ACID,TileMineralAnalyzer.consumedFluo));
+		
+		
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		
-		guiItemStacks.init(INPUT_SLOT, true, 13, 7);
-		guiItemStacks.init(OUTPUT_SLOT, false, 49, 55);
-		guiItemStacks.init(TUBE_SLOT, true, 49, 29);
-		guiItemStacks.init(SULFURIC_SLOT, true, 103, 7);
-		guiItemStacks.init(CHLOR_SLOT, true, 103, 29);
-		guiItemStacks.init(FLUO_SLOT, true, 103, 51);
-		
+
+		guiItemStacks.init(INPUT_SLOT, true, 7, 7);
+		guiItemStacks.init(OUTPUT_SLOT, false, 43, 55);
+		guiItemStacks.init(TUBE_SLOT, true, 43, 29);
 
 		AnalyzerRecipeWrapper wrapper = (AnalyzerRecipeWrapper) recipeWrapper;	
 		
 		guiItemStacks.set(TUBE_SLOT, new ItemStack(ModItems.testTube));
 		guiItemStacks.set(INPUT_SLOT, wrapper.getInputs());
 		guiItemStacks.set(OUTPUT_SLOT, wrapper.getOutputs());
-	
-		//guiItemStacks.set(SULFURIC_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Sulfuric Acid", 100));
-		//guiItemStacks.set(CHLOR_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrochloric Acid", 100));
-		//guiItemStacks.set(FLUO_SLOT, ChemicalItems.makeTanks(new ItemStack(ModItems.chemicalItems), "Hydrofluoric Acid", 100));
 	}
 
 	@Override

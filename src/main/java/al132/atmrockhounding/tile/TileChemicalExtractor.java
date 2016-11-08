@@ -3,34 +3,74 @@ package al132.atmrockhounding.tile;
 import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.client.gui.GuiChemicalExtractor;
 import al132.atmrockhounding.enums.EnumFluid;
+import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
 import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 
-public class TileChemicalExtractor extends TileMachine {
+public class TileChemicalExtractor extends TileMachine implements IFluidHandlingTile{
 
 	public int[] elementList = new int[56];
 
-	private int consumedSyng = 1;
-	private int consumedFluo = 2;
+	public static int consumedSyng = 10;
+	public static int consumedFluo = 20;
 
 	private int redstoneCharge = ModConfig.speedExtractor;
 
 	private static final int INPUT_SLOT = 0;
-			// FUEL_SLOT = 1;
+	// FUEL_SLOT = 1;
 	private static final int REDSTONE_SLOT = 2;
 	private static final int CONSUMABLE_SLOT = 3;
 	private static final int SYNGAS_SLOT = 4;
 	private static final int FLUO_SLOT = 5;
 	ItemStack inductor = new ItemStack(ModItems.inductionHeatingElement);
+	
+	public FluidTank syngasTank;
+	public FluidTank fluoTank;
 
 	public TileChemicalExtractor() {
 		super(6,56,1);
+
+		syngasTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
+			@Override  
+			public boolean canFillFluidType(FluidStack fluid)
+			{
+				return fluid.getFluid() == ModFluids.SYNGAS;
+			}
+		};
+		syngasTank.setTileEntity(this);
+		syngasTank.setCanDrain(false);
+		syngasTank.setCanFill(true);
+
+		fluoTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
+			@Override  
+			public boolean canFillFluidType(FluidStack fluid)
+			{
+				return fluid.getFluid() == ModFluids.HYDROFLUORIC_ACID;
+			}
+		};
+		fluoTank.setTileEntity(this);
+		fluoTank.setCanDrain(false);
+		fluoTank.setCanFill(true);
+
 
 		input = new MachineStackHandler(6,this){
 			@Override
@@ -49,12 +89,12 @@ public class TileChemicalExtractor extends TileMachine {
 						(insertingStack.getItem()==ModItems.testTube || insertingStack.getItem() == ModItems.cylinder)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == SYNGAS_SLOT && hasFluid(insertingStack,EnumFluid.SYNGAS)) {
+				/*if(slot == SYNGAS_SLOT && ItemStack.areItemsEqual(stackA, stackB)(insertingStack,EnumFluid.SYNGAS)) {
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == FLUO_SLOT && hasFluid(insertingStack,EnumFluid.HYDROFLUORIC_ACID)){
 					return super.insertItem(slot, insertingStack, simulate);
-				}
+				}*/
 				return insertingStack;
 			}
 		};
@@ -64,14 +104,6 @@ public class TileChemicalExtractor extends TileMachine {
 
 	//----------------------- CUSTOM -----------------------
 
-	public boolean hasFluid(ItemStack stack, EnumFluid fluid){
-		if(stack.hasTagCompound()){
-			if(stack.getTagCompound().getString("Fluid").equals(fluid.getName())){
-				return true;
-			}
-		}
-		return false;
-	}
 	@Override
 	public int getGUIHeight() {
 		return GuiChemicalExtractor.HEIGHT;
@@ -118,6 +150,9 @@ public class TileChemicalExtractor extends TileMachine {
 			elementList[i] = compound.getInteger("element" + i);
 		}
 		this.cookTime = compound.getInteger("CookTime");
+		this.redstoneCount = compound.getInteger("RedstoneCount");
+		this.syngasTank.readFromNBT(compound.getCompoundTag("SyngasTank"));
+		this.fluoTank.readFromNBT(compound.getCompoundTag("FluoTank"));
 	}
 
 	@Override
@@ -127,8 +162,20 @@ public class TileChemicalExtractor extends TileMachine {
 			compound.setInteger("element" + i, elementList[i]);
 		}
 		compound.setInteger("CookTime", this.cookTime);
+		compound.setInteger("RedstoneCount", this.redstoneCount);
+
+		NBTTagCompound syngasTankNBT = new NBTTagCompound();
+		this.syngasTank.writeToNBT(syngasTankNBT);
+		compound.setTag("SyngasTank", syngasTankNBT);
+
+		NBTTagCompound fluoTankNBT = new NBTTagCompound();
+		this.fluoTank.writeToNBT(fluoTankNBT);
+		compound.setTag("FluoTank", fluoTankNBT);
+
 		return compound;
 	}
+
+
 
 
 
@@ -159,6 +206,14 @@ public class TileChemicalExtractor extends TileMachine {
 	}
 
 
+	@Override
+	public boolean interactWithBucket(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+			ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+
+		boolean didFill = FluidUtil.interactWithFluidHandler(heldItem, this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side), player);
+		this.markDirtyClient();
+		return didFill;
+	}
 
 	private void execute() {
 		cookTime++;
@@ -169,8 +224,8 @@ public class TileChemicalExtractor extends TileMachine {
 			extractElements();
 			input.decrementSlot(INPUT_SLOT);
 			input.damageSlot(CONSUMABLE_SLOT);
-			input.decrementFluid(SYNGAS_SLOT,consumedSyng);
-			input.decrementFluid(FLUO_SLOT,consumedFluo);
+			syngasTank.getFluid().amount-= consumedSyng;
+			fluoTank.getFluid().amount-= consumedFluo;
 			this.markDirty();
 		}
 	}
@@ -194,7 +249,8 @@ public class TileChemicalExtractor extends TileMachine {
 				&& hasTestTube()
 				&& powerCount >= getCookTimeMax()
 				&& redstoneCount >= getCookTimeMax()
-				&& hasEnoughAcid(SYNGAS_SLOT, EnumFluid.SYNGAS, consumedSyng) && hasEnoughAcid(FLUO_SLOT, EnumFluid.HYDROFLUORIC_ACID, consumedFluo);
+				&& syngasTank.getFluidAmount() >= TileChemicalExtractor.consumedSyng
+				&& fluoTank.getFluidAmount() >=TileChemicalExtractor.consumedFluo;
 	}
 
 	private boolean hasRecipe(ItemStack stack) {
@@ -210,24 +266,23 @@ public class TileChemicalExtractor extends TileMachine {
 				stack.getItem()  == ModItems.sulfateShards ||
 				stack.getItem()  == ModItems.sulfideShards);
 	}
-
-	private boolean hasTank(int slot) {
-		return false;
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
+		else return super.hasCapability(capability, facing);
 	}
 
-	private boolean hasEnoughAcid(int acidSlot, EnumFluid acidType, int acidConsumed) {
-		if(hasTank(acidSlot)){
-			if(input.getStackInSlot(acidSlot).hasTagCompound()){
-				if(input.getStackInSlot(acidSlot).getTagCompound().getString("Fluid").matches(acidType.getName())){
-					if(input.getStackInSlot(acidSlot).getTagCompound().getInteger("Quantity") >= acidConsumed){
-						return true;
-					}
-				}
-			}
-		}
-		return false;
+	public FluidHandlerConcatenate getCombinedTank(){
+		return new FluidHandlerConcatenate(syngasTank,fluoTank);
 	}
 
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			return (T) getCombinedTank();
+		return super.getCapability(capability, facing);
+	}
 
 
 	private void extractElements() {

@@ -2,11 +2,17 @@
 jei.sizer.name=Mineral Sizer
 jei.Analyzer.name=Mineral Analyzer
 jei.alloyer.name=Metal Alloyer
+jei.lab_oven.name=Lab Oven
 
 #### FLUID ####
 tile.atmrockhounding:fluid.sulfuric_acid.name=Sulfuric Acid
 tile.atmrockhounding:fluid.hydrochloric_acid.name=Hydrochloric Acid
 tile.atmrockhounding:fluid.hydrofluoric_acid.name=Hydrofluoric Acid
+tile.atmrockhounding:fluid.syngas.name=Syngas
+fluid.sulfuric_acid=Sulfuric Acid
+fluid.hydrochloric_acid=Hydrochloric Acid
+fluid.hydrofluoric_acid=Hydrofluoric Acid
+fluid.syngas=Syngas
 
 #### GENERAL ####
 itemGroup.rockhoundingChemistry=Rockhounding: Chemistry

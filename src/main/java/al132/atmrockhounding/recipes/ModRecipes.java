@@ -7,6 +7,7 @@ import al132.atmrockhounding.blocks.ModBlocks;
 import al132.atmrockhounding.enums.EnumAlloy;
 import al132.atmrockhounding.enums.EnumElement;
 import al132.atmrockhounding.enums.EnumFluid;
+import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.machines.ChemicalExtractorRecipe;
 import al132.atmrockhounding.recipes.machines.LabOvenRecipe;
@@ -17,6 +18,8 @@ import al132.atmrockhounding.utils.Utils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -36,7 +39,7 @@ public class ModRecipes {
 	public static ArrayList<MetalAlloyerRecipe> getImmutableAlloyerRecipes(){
 		return new ArrayList<MetalAlloyerRecipe>(alloyerRecipes);
 	}
-	
+
 	private static ItemStack dustforcedstack;
 	private static ItemStack ingotforcedstack;
 
@@ -63,7 +66,7 @@ public class ModRecipes {
 
 	}
 
-	
+
 	public static void loadDictionary()  {
 		OreDictionary.registerOre("dustSalt", new ItemStack(ModItems.salt, 1, 1));	
 		OreDictionary.registerOre("itemFluorite", new ItemStack(ModItems.halideShards, 1, 4));	
@@ -89,10 +92,10 @@ public class ModRecipes {
 		//sizerRecipes.add(new MineralSizerRecipe(Items.GOLD_INGOT,0, ModItems.chemicalDusts,45)); //gold dust
 		sizerRecipes.add(new MineralSizerRecipe(Blocks.STONE,1, ModItems.fluoriteCompound,0)); //fuorite dust
 
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.sulfurCompound,0, EnumFluid.WATER, EnumFluid.SULFURIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.sodiumCompound,0, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROCHLORIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.fluoriteCompound,0, EnumFluid.SULFURIC_ACID, EnumFluid.HYDROFLUORIC_ACID));
-		labOvenRecipes.add(new LabOvenRecipe(ModItems.carbonCompound,0, EnumFluid.WATER, EnumFluid.SYNGAS));
+		labOvenRecipes.add(new LabOvenRecipe(new ItemStack(ModItems.sulfurCompound), new FluidStack(FluidRegistry.WATER,500), new FluidStack(ModFluids.SULFURIC_ACID,500)));
+		labOvenRecipes.add(new LabOvenRecipe(new ItemStack(ModItems.sodiumCompound), new FluidStack(ModFluids.SULFURIC_ACID,500), new FluidStack(ModFluids.HYDROCHLORIC_ACID,500)));
+		labOvenRecipes.add(new LabOvenRecipe(new ItemStack(ModItems.fluoriteCompound), new FluidStack(ModFluids.SULFURIC_ACID,500), new FluidStack(ModFluids.HYDROFLUORIC_ACID,500)));
+		labOvenRecipes.add(new LabOvenRecipe(new ItemStack(ModItems.carbonCompound), new FluidStack(FluidRegistry.WATER,500), new FluidStack(ModFluids.SYNGAS,500)));
 
 
 		//TODO find a more readable way to do this
@@ -137,8 +140,8 @@ public class ModRecipes {
 				Utils.getOres(NICKEL.getDustName(),2),
 				Utils.getOres(MANGANESE.getDustName(),2),
 				Utils.getOres(IRON.getDustName(),1)));
-		
-		
+
+
 		alloyerRecipes.add(new MetalAlloyerRecipe(
 				new ItemStack(ModItems.alloyIngots,8,NIMONIC.ordinal()),
 				Utils.getOres(NICKEL.getDustName(),5),
@@ -184,7 +187,7 @@ public class ModRecipes {
 				Utils.getOres(SILVER.getDustName(),2),
 				Utils.getOres(COPPER.getDustName(),1),
 				Utils.getOres(MANGANESE.getDustName(),1)));
-		
+
 		alloyerRecipes.add(new MetalAlloyerRecipe(
 				new ItemStack(ModItems.alloyIngots,8,SHIBUICHI.ordinal()),
 				Utils.getOres(COPPER.getDustName(),7),
@@ -212,17 +215,12 @@ public class ModRecipes {
 				Utils.getOres(PHOSPHORUS.getDustName(), 1),
 				Utils.getOres(MANGANESE.getDustName(), 1),
 				Utils.getOres(COPPER.getDustName(), 1)));
-				
+
 	}
 
 
-	public static EnumFluid getLabOvenSolvent(ItemStack input){
-		for(LabOvenRecipe recipe: labOvenRecipes){
-			if(ItemStack.areItemsEqual(input, recipe.getSolute())){
-				return recipe.getSolvent();
-			}
-		}
-		return EnumFluid.EMPTY;
+	public static FluidStack getLabOvenSolvent(ItemStack input){
+		return null;
 	}
 
 	private static void craftingRecipes() {

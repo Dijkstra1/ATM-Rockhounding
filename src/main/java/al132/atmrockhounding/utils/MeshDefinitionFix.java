@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author diesieben07
  * 
- * Where al132 found: Choonster's "testmod3"
+ * Found for ATM Rockhounding in Choonster's "testmod3"
  */
 public interface MeshDefinitionFix extends ItemMeshDefinition {
 	ModelResourceLocation getLocation(ItemStack stack);

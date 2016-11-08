@@ -42,6 +42,9 @@ public class ModFluids {
 	public static final Fluid HYDROFLUORIC_ACID = createFluid("hydrofluoric_acid", true,
 			fluid -> fluid.setDensity(1600).setViscosity(2000).canBePlacedInWorld(),
 			fluid -> new BlockFluidClassic(fluid, new MaterialLiquid(MapColor.ADOBE)));
+	public static final Fluid SYNGAS = createFluid("syngas", true,
+			fluid -> fluid.setDensity(1600).setViscosity(2000).canBePlacedInWorld(),
+			fluid -> new BlockFluidClassic(fluid, new MaterialLiquid(MapColor.ADOBE)));
 	
 
 

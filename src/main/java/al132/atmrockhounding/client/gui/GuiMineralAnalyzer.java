@@ -7,8 +7,10 @@ import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.container.ContainerMineralAnalyzer;
 import al132.atmrockhounding.tile.TileMineralAnalyzer;
+import al132.atmrockhounding.utils.RenderUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,6 +44,39 @@ public class GuiMineralAnalyzer extends GuiBase {
 		   List<String> tooltip = Arrays.asList(text);
 		   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 	   }
+	   
+		//sulf tank
+		if(mouseX>= 105+x && mouseX <= 121+x && mouseY >= 36+y && mouseY <= 96+y){
+			int fluidAmount = 0;
+			if(mineralAnalyzer.sulfTank.getFluid() != null){
+				fluidAmount = this.mineralAnalyzer.sulfTank.getFluidAmount();
+			}
+			String[] text = {fluidAmount + "/" + this.mineralAnalyzer.sulfTank.getCapacity() + " mb","Sulfuric Acid"};
+			List<String> tooltip = Arrays.asList(text);
+			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+		}
+		
+		//chlo tank
+		if(mouseX>= 127+x && mouseX <= 143+x && mouseY >= 36+y && mouseY <= 96+y){
+			int fluidAmount = 0;
+			if(mineralAnalyzer.chloTank.getFluid() != null){
+				fluidAmount = this.mineralAnalyzer.chloTank.getFluidAmount();
+			}
+			String[] text = {fluidAmount + "/" + this.mineralAnalyzer.chloTank.getCapacity() + " mb", "Hydrochloric Acid"};
+			List<String> tooltip = Arrays.asList(text);
+			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+		}
+		
+		//fluo tank
+		if(mouseX>= 149+x && mouseX <= 165+x && mouseY >= 36+y && mouseY <= 96+y){
+			int fluidAmount = 0;
+			if(mineralAnalyzer.fluoTank.getFluid() != null){
+				fluidAmount = this.mineralAnalyzer.fluoTank.getFluidAmount();
+			}
+			String[] text = {fluidAmount + "/" + this.mineralAnalyzer.fluoTank.getCapacity() + " mb","Hydrofluoric Acid"};
+			List<String> tooltip = Arrays.asList(text);
+			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+		}
     }
 
     @Override
@@ -50,7 +85,6 @@ public class GuiMineralAnalyzer extends GuiBase {
 		
         String device = "Mineral Analyzer";
         this.fontRendererObj.drawString(device, this.xSize / 2 - this.fontRendererObj.getStringWidth(device) / 2, 6, 4210752);
-        this.fontRendererObj.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
     }
 
     @Override
@@ -62,13 +96,43 @@ public class GuiMineralAnalyzer extends GuiBase {
         //power bar
         if (this.mineralAnalyzer.powerCount > 0){
             int k = this.getBarScaled(50, this.mineralAnalyzer.powerCount, this.mineralAnalyzer.powerMax);
-            this.drawTexturedModalRect(i + 11, j + 40 + (50 - k), 176, 51, 10, k);
+            this.drawTexturedModalRect(i + 9, j + 54 + (50 - k), 176, 51, 10, k);
         }
         //smelt bar
         if (this.mineralAnalyzer.cookTime > 0){
             int k = this.getBarScaled(51, this.mineralAnalyzer.cookTime, ModConfig.speedAnalyzer);
-            this.drawTexturedModalRect(i + 48, j + 42, 176, 0, 27, k);
+            this.drawTexturedModalRect(i + 28, j + 42, 176, 0, 27, k);
         }
+        
+
+		if(mineralAnalyzer.sulfTank.getFluid() != null){
+			FluidStack temp = mineralAnalyzer.sulfTank.getFluid();
+			int capacity = mineralAnalyzer.sulfTank.getCapacity();
+			if(temp.amount > 5){
+				RenderUtils.bindBlockTexture();
+				RenderUtils.renderGuiTank(temp,capacity, temp.amount, i + 105, j + 36, zLevel, 16, 60);
+			}
+		}
+		
+		if(mineralAnalyzer.chloTank.getFluid() != null){
+			FluidStack temp = mineralAnalyzer.chloTank.getFluid();
+			int capacity = mineralAnalyzer.chloTank.getCapacity();
+			if(temp.amount > 5){
+				RenderUtils.bindBlockTexture();
+				RenderUtils.renderGuiTank(temp,capacity, temp.amount, i + 127, j + 36, zLevel, 16, 60);
+			}
+		}
+		
+		if(mineralAnalyzer.fluoTank.getFluid() != null){
+			FluidStack temp = mineralAnalyzer.fluoTank.getFluid();
+			int capacity = mineralAnalyzer.fluoTank.getCapacity();
+			if(temp.amount > 5){
+				RenderUtils.bindBlockTexture();
+				RenderUtils.renderGuiTank(temp,capacity, temp.amount, i + 149, j + 36, zLevel, 16, 60);
+			}
+		}
+		
+		
     }
 
 }
