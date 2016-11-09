@@ -235,7 +235,7 @@ public class ModRecipes {
 			}
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.alloyIngots, 1, x ), new Object[] { "XXX", "XXX", "XXX", 'X', EnumAlloy.getDictName("nugget",x)}));
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyIngots, 9, x), new Object[] { EnumAlloy.getDictName("block", x)}));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyNuggets, 9, x), new Object[] { new ItemStack(ModItems.alloyIngots,1,x).getItem() }));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.alloyNuggets, 9, x), new Object[] { new ItemStack(ModItems.alloyIngots,1,x) }));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBlocks, 1, x), new Object[] { "XXX", "XXX", "XXX", 'X', new ItemStack(ModItems.alloyIngots,1,x) }));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.alloyBricks, 4, x), new Object[] { "XX", "XX", 'X', EnumAlloy.getDictName("block", x)}));
 		}
