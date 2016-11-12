@@ -98,7 +98,12 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 				return insertingStack;
 			}
 		};
-		automationInput = new WrappedItemHandler(input, WriteMode.IN_OUT);
+		automationInput = new WrappedItemHandler(input, WriteMode.IN_OUT){ 
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return null;
+			}
+		};
 	}
 
 

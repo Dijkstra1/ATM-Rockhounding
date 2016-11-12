@@ -54,7 +54,12 @@ public class TileMineralSizer extends TileMachine {
 			}
 		};
 
-		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN_OUT);
+		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN_OUT){
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return null;
+			}
+		};
 	}
 
 	@Override
@@ -148,12 +153,10 @@ public class TileMineralSizer extends TileMachine {
 		if(input.getStackInSlot(FUEL_SLOT) != null){fuelHandler();}
 		if(!worldObj.isRemote){
 			if(canProcess(input.getStackInSlot(INPUT_SLOT))){
-				System.out.println("cook time is: " + cookTime);
 				cookTime++;
 				powerCount--;
 				if(cookTime >= getMaxCookTime()) {
 					cookTime = 0;
-					System.out.println("Processing, get max cook is " + getMaxCookTime());
 					process();
 				}
 			}

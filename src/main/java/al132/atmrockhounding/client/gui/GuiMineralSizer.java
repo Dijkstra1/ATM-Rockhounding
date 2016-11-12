@@ -61,7 +61,6 @@ public class GuiMineralSizer extends GuiBase {
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
-        //System.out.println("container backgrounding");
         //power bar
         if (this.mineralSizer.powerCount > 0){
             int k = this.getBarScaled(50, this.mineralSizer.powerCount, this.mineralSizer.powerMax);
@@ -71,7 +70,6 @@ public class GuiMineralSizer extends GuiBase {
         if (this.mineralSizer.cookTime > 0){
             int k = this.getBarScaled(46, this.mineralSizer.cookTime, this.mineralSizer.getMaxCookTime());
             this.drawTexturedModalRect(i + 66, j + 34, 176, 0, k, 46);
-            System.out.println(mineralSizer.cookTime);
         }
     }
 

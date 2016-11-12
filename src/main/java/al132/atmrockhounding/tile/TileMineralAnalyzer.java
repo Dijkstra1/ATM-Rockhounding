@@ -55,9 +55,9 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 		sulfTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
 			@Override  
 			public boolean canFillFluidType(FluidStack fluid)
-		    {
-		        return fluid.getFluid() == ModFluids.SULFURIC_ACID;
-		    }
+			{
+				return fluid.getFluid() == ModFluids.SULFURIC_ACID;
+			}
 
 		};
 		sulfTank.setTileEntity(this);
@@ -66,24 +66,24 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 		chloTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
 			@Override  
 			public boolean canFillFluidType(FluidStack fluid)
-		    {
-		        return fluid.getFluid() == ModFluids.HYDROCHLORIC_ACID;
-		    }
+			{
+				return fluid.getFluid() == ModFluids.HYDROCHLORIC_ACID;
+			}
 
 		};
-		
+
 		chloTank.setTileEntity(this);
 		chloTank.setCanDrain(false);
 
 		fluoTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
 			@Override  
 			public boolean canFillFluidType(FluidStack fluid)
-		    {
-		        return fluid.getFluid() == ModFluids.HYDROFLUORIC_ACID;
-		    }
+			{
+				return fluid.getFluid() == ModFluids.HYDROFLUORIC_ACID;
+			}
 
 		};
-		
+
 		fluoTank.setTileEntity(this);
 		fluoTank.setCanDrain(false);
 
@@ -100,15 +100,20 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 				if(slot == CONSUMABLE_SLOT && insertingStack.getItem() == ModItems.testTube){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				 if(slot == INDUCTOR_SLOT && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
-					 return super.insertItem(slot, insertingStack, simulate);
-				 }
+				if(slot == INDUCTOR_SLOT && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
+					return super.insertItem(slot, insertingStack, simulate);
+				}
 
-				 return insertingStack;
+				return insertingStack;
 			}
 		};
 
-		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN_OUT);
+		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN_OUT){
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return null;
+			}
+		};
 	}
 
 	private boolean isOutputEmpty(){
@@ -144,17 +149,17 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		super.writeToNBT(compound);
 		compound.setInteger("CookTime", this.cookTime);
-		
+
 		NBTTagCompound sulfTankNBT = new NBTTagCompound();
 		this.sulfTank.writeToNBT(sulfTankNBT);
 		compound.setTag("SulfTank", sulfTankNBT);
 
-		
+
 		NBTTagCompound chloTankNBT = new NBTTagCompound();
 		this.chloTank.writeToNBT(chloTankNBT);
 		compound.setTag("ChloTank", chloTankNBT);
 
-		
+
 		NBTTagCompound fluoTankNBT = new NBTTagCompound();
 		this.fluoTank.writeToNBT(fluoTankNBT);
 		compound.setTag("FluoTank", fluoTankNBT);

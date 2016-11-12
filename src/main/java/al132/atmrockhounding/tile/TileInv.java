@@ -85,6 +85,10 @@ public abstract class TileInv extends TileBase implements ITickable{
 		compound.setTag("output", output.serializeNBT());
 		return compound;
 	}
+	
+	public IItemHandler getCombinedAutomationHandlers(){
+		return new CombinedInvWrapper(automationInput,automationOutput);
+	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -95,8 +99,7 @@ public abstract class TileInv extends TileBase implements ITickable{
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if(facing == EnumFacing.DOWN) return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationOutput);
-			else return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getCombinedAutomationHandlers());
 		}
 		return super.getCapability(capability, facing);
 	}

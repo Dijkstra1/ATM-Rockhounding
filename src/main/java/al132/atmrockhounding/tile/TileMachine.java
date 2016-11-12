@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -70,16 +71,15 @@ public class TileMachine extends TileInv  implements IRFStorage {
 		}
 		return automationOutput;
 	}
+	
+	public IItemHandler getCombinedAutomationHandlers(){
+		return new CombinedInvWrapper(automationInput, capOutput());
+	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if(facing == EnumFacing.DOWN){
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(capOutput());
-			}
-			else {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(automationInput);
-			}
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getCombinedAutomationHandlers());
 		}
 		return super.getCapability(capability, facing);
 	}

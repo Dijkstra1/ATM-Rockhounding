@@ -85,7 +85,13 @@ public class TileLabOven extends TileMachine implements IFluidHandlingTile{
 			}
 		};
 
-		automationInput = new WrappedItemHandler(input,WriteMode.IN_OUT);
+		automationInput = new WrappedItemHandler(input,WriteMode.IN_OUT){
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return null;
+			}
+		};
+
 		this.markDirtyClient();
 	}
 
@@ -152,7 +158,7 @@ public class TileLabOven extends TileMachine implements IFluidHandlingTile{
 		if(input.getStackInSlot(REDSTONE_SLOT) != null){redstoneHandler();}
 
 		if(!worldObj.isRemote){
-			
+
 			if( FluidUtil.getFluidContained(input.getStackInSlot(SOLVENT_SLOT)) != null){
 				if(FluidUtil.tryEmptyContainer(input.getStackInSlot(SOLVENT_SLOT), inputTank, 1000, null, false) != null){
 					input.setStackInSlot(SOLVENT_SLOT,FluidUtil.tryEmptyContainer(input.getStackInSlot(SOLVENT_SLOT), inputTank, 1000, null, true));

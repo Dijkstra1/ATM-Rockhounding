@@ -77,6 +77,8 @@ public class RockhoundingPlugin extends BlankModPlugin{
 		for(int i=0;i<EnumElement.size();i++){
 			registry.addDescription(new ItemStack(ModItems.chemicalDusts,1,i), "Made in the Chemical Extractor");
 		}
+		
+		
 		registry.addDescription(new ItemStack(ModBlocks.chemicalExtractor), 
 				"The chemical extractor is used to extract element dusts from shards. It needs the following to operate:\n\n "
 						+ "1. A fuel source in the top left fuel slot (like coal, or wood, or whatever)\n\n"
