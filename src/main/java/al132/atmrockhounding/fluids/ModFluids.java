@@ -20,7 +20,6 @@ import java.util.function.Function;
 import al132.atmrockhounding.Reference;
 
 //Courtesy of Choonster, (MIT License) https://github.com/Choonster/TestMod3
-@SuppressWarnings("WeakerAccess")
 public class ModFluids {
 	/**
 	 * The fluids registered by this mod. Includes fluids that were already registered by another mod.

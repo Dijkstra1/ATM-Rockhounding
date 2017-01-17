@@ -20,10 +20,9 @@ public class ContainerLabOven extends ContainerBase<TileLabOven> {
 		IItemHandler input = tile.getInput();
 
 		this.addSlotToContainer(new SlotItemHandler(input, 0, 46, 70));//input solute
-		this.addSlotToContainer(new SlotItemHandler(input, 1, 8, 54));//fuel
+		this.addSlotToContainer(new SlotItemHandler(input, 1, 21, 5));//fuel
 		this.addSlotToContainer(new SlotItemHandler(input, 2, 148, 23));//input solvent
 		this.addSlotToContainer(new SlotItemHandler(input, 3, 118, 103));//output
-		this.addSlotToContainer(new SlotItemHandler(input, 4, 27, 6));//input redstone
 
 	}
 }

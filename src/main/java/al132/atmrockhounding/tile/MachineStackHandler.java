@@ -15,7 +15,6 @@ public class MachineStackHandler extends ItemStackHandler{
 
 	}
 
-
 	public void incrementSlot(int slot){
 		ItemStack temp = this.getStackInSlot(slot);
 		if(temp.stackSize+1 <= temp.getMaxStackSize()){

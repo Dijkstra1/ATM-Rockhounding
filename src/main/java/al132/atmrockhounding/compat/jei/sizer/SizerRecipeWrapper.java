@@ -28,7 +28,6 @@ public class SizerRecipeWrapper extends RHRecipeWrapper<MineralSizerRecipe> {
 	@Nonnull
 	@Override
 	public List<ItemStack> getOutputs() {
-		ArrayList<ItemStack> output = new ArrayList<ItemStack>();
 		if(getRecipe().getOutputs() != null) return getRecipe().getOutputs();
 		return Collections.singletonList(getRecipe().getOutput());
 	}

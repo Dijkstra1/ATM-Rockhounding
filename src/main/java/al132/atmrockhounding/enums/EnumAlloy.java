@@ -31,7 +31,7 @@ public enum EnumAlloy implements IStringSerializable {
 		}
 		return temp;
 	}
-	
+
 	public static String[] getOreArray(String prefix){
 		String[]temp = new String[size()];
 		for(int i=0; i<size();i++){

@@ -16,7 +16,7 @@ public class AlloyBricks extends BaseMetaBlock {
 	
     public AlloyBricks(Material material, String[] array, float hardness, float resistance, String name, SoundType stepSound){
         super(material, array, hardness, resistance, name, stepSound);
-		setHarvestLevel("pickaxe", 0);
+		//setHarvestLevel("pickaxe", 0);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumAlloy.getValue(0)));
     }
 

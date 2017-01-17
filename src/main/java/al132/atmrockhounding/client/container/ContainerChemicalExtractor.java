@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+
 public class ContainerChemicalExtractor extends ContainerBase<TileChemicalExtractor>{
 
     public ContainerChemicalExtractor(InventoryPlayer playerInventory, TileChemicalExtractor tile){
@@ -18,11 +19,10 @@ public class ContainerChemicalExtractor extends ContainerBase<TileChemicalExtrac
 		IItemHandler output = tile.getOutput();
 		
         this.addSlotToContainer(new SlotItemHandler(input, 0, 57, 52));//input
-        this.addSlotToContainer(new SlotItemHandler(input, 1, 8, 8));//fuel
-        this.addSlotToContainer(new SlotItemHandler(input, 2, 28, 8));//redstone
-        this.addSlotToContainer(new SlotItemHandler(input, 3, 57, 74));//consumable
-        this.addSlotToContainer(new SlotItemHandler(input, 4, 8, 90));//syngas
-        this.addSlotToContainer(new SlotItemHandler(input, 5, 28, 90));//fluo
+        this.addSlotToContainer(new SlotItemHandler(input, 1, 17, 8));//fuel
+        this.addSlotToContainer(new SlotItemHandler(input, 2, 57, 74));//consumable
+        this.addSlotToContainer(new SlotItemHandler(input, 3, 8, 90));//syngas
+        this.addSlotToContainer(new SlotItemHandler(input, 4, 28, 90));//fluo
 
         //cabinets
 		for(int x=0; x<=6; x++){

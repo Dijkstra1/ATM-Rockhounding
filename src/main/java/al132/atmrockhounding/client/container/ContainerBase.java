@@ -28,7 +28,7 @@ public abstract class ContainerBase<T extends TileInv> extends Container {
 				int x = 8 + col * 18;
 				//int y = row * 18 + 70;
 				int y = row * 18 + tile.getGUIHeight()-82;
-				this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+				this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, x, y));
 			}
 		}
 
@@ -38,6 +38,7 @@ public abstract class ContainerBase<T extends TileInv> extends Container {
 			this.addSlotToContainer(new Slot(playerInventory, row, x, y));
 		}
 	}
+
 
 	@Nullable
 	@Override

@@ -2,117 +2,163 @@ package al132.atmrockhounding.tile;
 
 import java.util.Random;
 
-import al132.atmrockhounding.utils.FuelUtils;
+import al132.atmrockhounding.items.ModItems;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-public class TileMachine extends TileInv  implements IRFStorage {
+public abstract class TileMachine extends TileInv implements IEnergyReceiver {
 
-	public int powerMax = 32000;
-	public int powerCount = 0;
-	public int redstoneCount = 0;
-	public int redstoneMax = 5000;
 	public int cookTime = 0;
-	
+	public static final int ENERGY_PER_DUST = 500;
+
 	public Random rand = new Random();
 
-	public int FUEL_SLOT;
+	protected EnergyStorage energyStorage;
 
 	public TileMachine(int inputSlots, int outputSlots, int fuelSlot) {
 		super(inputSlots, outputSlots);
-		this.FUEL_SLOT = fuelSlot;
+		energyStorage = new EnergyStorage(30000);
+
 	}
 
+	public abstract boolean canProcess();
+	public abstract int getInputIndex();
+	public abstract int getFuelIndex();
+	public abstract int getConsumableIndex();
+
+	public static boolean isInductorOrFuel(ItemStack stack){
+		if (stack == null) return false;
+		
+		return ItemStack.areItemsEqual(stack, new ItemStack(ModItems.energized_fuel_blend))
+			||  ItemStack.areItemsEqual(stack, new ItemStack(ModItems.inductionHeatingElement));
+	}
+	
+	public IEnergyStorage getEnergyStorage(){
+		return this.energyStorage;
+	}
+
+	public boolean hasConsumable(){
+		return input.getStackInSlot(getConsumableIndex()) != null;
+	}
+
+	public boolean hasInput(){
+		return input.getStackInSlot(getInputIndex()) != null;
+	}
 
 	protected void fuelHandler() {
-		if(input.getStackInSlot(FUEL_SLOT) != null && FuelUtils.isItemFuel(input.getStackInSlot(FUEL_SLOT)) ){
-			if( powerCount <= (powerMax - FuelUtils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT))) ){
+		if(ItemStack.areItemsEqual(input.getStackInSlot(getFuelIndex()), new ItemStack(ModItems.energized_fuel_blend))){
+			if( energyStorage.getEnergyStored() <= (energyStorage.getMaxEnergyStored() - TileMachine.ENERGY_PER_DUST)){
 				burnFuel();
 			}
 		}
 	}
 
 	protected void burnFuel() {
-		powerCount += FuelUtils.getItemBurnTime(input.getStackInSlot(FUEL_SLOT));
-		ItemStack stack = input.getStackInSlot(FUEL_SLOT);
+		energyStorage.receiveEnergy(ENERGY_PER_DUST, false);
+		ItemStack stack = input.getStackInSlot(getFuelIndex());
 		stack.stackSize--;
-		input.setStackInSlot(FUEL_SLOT, stack);
-		if(input.getStackInSlot(FUEL_SLOT).stackSize <= 0){
-			input.setStackInSlot(FUEL_SLOT, input.getStackInSlot(FUEL_SLOT).getItem().getContainerItem(input.getStackInSlot(FUEL_SLOT)));
+		input.setStackInSlot(getFuelIndex(), stack);
+		if(input.getStackInSlot(getFuelIndex()).stackSize <= 0){
+			input.setStackInSlot(getFuelIndex(), input.getStackInSlot(getFuelIndex()).getItem().getContainerItem(input.getStackInSlot(getFuelIndex())));
 		}
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		this.powerCount = compound.getInteger("PowerCount");
+		energyStorage = new EnergyStorage(compound.getInteger("PowerMax"));
+		energyStorage.receiveEnergy(compound.getInteger("PowerCount"), false);
+		this.cookTime = compound.getInteger("CookTime");
 	}
 
+
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		compound.setInteger("PowerCount", this.powerCount);
+		compound.setInteger("PowerMax", energyStorage.getMaxEnergyStored());
+		compound.setInteger("PowerCount", energyStorage.getEnergyStored());
+		compound.setInteger("CookTime", this.cookTime);
 		return compound;
 	}
 
 	public IItemHandlerModifiable capOutput(){
-		if(input.getStackInSlot(FUEL_SLOT) != null){
-			if(input.getStackInSlot(FUEL_SLOT).getItem() == Items.BUCKET){
+		if(input.getStackInSlot(getFuelIndex()) != null){
+			if(input.getStackInSlot(getFuelIndex()).getItem() == Items.BUCKET){
 				return new CombinedInvWrapper(automationOutput,new RangedWrapper(input,1,2));
 			}
 		}
 		return automationOutput;
 	}
-	
+
 	public IItemHandler getCombinedAutomationHandlers(){
 		return new CombinedInvWrapper(automationInput, capOutput());
+	}
+
+	public FluidHandlerConcatenate getCombinedTank(){return null;}
+
+	public boolean canInduct() {
+		return ItemStack.areItemsEqual(input.getStackInSlot(getFuelIndex()), new ItemStack(ModItems.inductionHeatingElement));
+	}
+
+	@Override
+	public int getEnergyStored(EnumFacing from) {
+		return energyStorage.getEnergyStored();
+	}
+
+
+	@Override
+	public int getMaxEnergyStored(EnumFacing from) {
+		return energyStorage.getMaxEnergyStored();
+	}
+
+
+	@Override
+	public boolean canConnectEnergy(EnumFacing from) {
+		return true;
+	}
+
+
+	@Override
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+		if(!canInduct()) return 0;
+		else return energyStorage.receiveEnergy(maxReceive, simulate);
+	}
+
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (this instanceof IFluidHandlingTile 
+				&& capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
+		else if (capability == CapabilityEnergy.ENERGY) return true;
+		else return super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getCombinedAutomationHandlers());
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getCombinedAutomationHandlers());
+		}
+		else if (this instanceof IFluidHandlingTile && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getCombinedTank());
+		else if (capability == CapabilityEnergy.ENERGY) {
+			if(canInduct()){
+				return CapabilityEnergy.ENERGY.cast(energyStorage);
+			}
 		}
 		return super.getCapability(capability, facing);
 	}
-
-	public void update() {}
-
-	@Override
-	public int getPower() {return this.powerCount; }
-
-	@Override
-	public int getPowerMax() { return this.powerMax; }
-
-	@Override
-	public int getRedstoneMax() { return this.redstoneMax; }
-
-	@Override
-	public int getRedstone() {return this.redstoneCount; }
-
-	@Override
-	public void setPower(int amount) { this.powerCount = amount; }
-
-	@Override
-	public void addPower(int amount) { this.powerCount+= amount;	}
-
-	@Override
-	public void setRedstone(int amount) {this.redstoneCount = amount;}
-
-	@Override
-	public void addRedstone(int amount) {this.redstoneCount+=amount;}
-
-	@Override
-	public boolean canInduct() {return false;}
-
-	@Override
-	public int getGUIHeight() {return 0; }
 }

@@ -51,6 +51,7 @@ public class ExtractorRecipeCategory extends RHRecipeCategory {
 		guiItemStacks.set(OUTPUT_SLOT, wrapper.getOutputs());
 	
 	}
+	
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {

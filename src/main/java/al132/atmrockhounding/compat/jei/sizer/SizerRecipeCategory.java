@@ -2,16 +2,12 @@ package al132.atmrockhounding.compat.jei.sizer;
 
 import javax.annotation.Nonnull;
 
-import com.blamejared.ctgui.reference.Reference;
-
 import al132.atmrockhounding.client.gui.GuiMineralSizer;
 import al132.atmrockhounding.compat.jei.RHRecipeCategory;
 import al132.atmrockhounding.compat.jei.RHRecipeUID;
 import al132.atmrockhounding.items.ModItems;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.gui.IDrawableAnimated;
-import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;

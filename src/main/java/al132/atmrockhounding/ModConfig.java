@@ -55,10 +55,10 @@ public class ModConfig {
 
 	//TOOLS
 		config.addCustomCategoryComment("Tools", "These settings handle the settings of machines and tools.");
-		speedLabOven = config.get(									CATEGORY_TOONS, "SpeedLabOven", 			200,	"Ticks required to produce acids in the Lab Oven").getInt();
-		speedSizer = config.get(				CATEGORY_TOONS, "SpeedMineralSizer", 		200,	"Ticks required to crush minerals in the Mineral Sizer").getInt();
-		speedAnalyzer = config.get(			CATEGORY_TOONS, "SpeedMineralAnalyzer", 	200,	"Ticks required to analyze minerals in the Mineral Analyzer").getInt();
-		speedExtractor = config.get(			CATEGORY_TOONS, "SpeedChemicalExtractor", 	200,	"Ticks required to extract elements in the Chemical Extractor").getInt();
+		speedLabOven = config.get(									CATEGORY_TOONS, "SpeedLabOven", 			120,	"Ticks required to produce acids in the Lab Oven").getInt();
+		speedSizer = config.get(				CATEGORY_TOONS, "SpeedMineralSizer", 		120,	"Ticks required to crush minerals in the Mineral Sizer").getInt();
+		speedAnalyzer = config.get(			CATEGORY_TOONS, "SpeedMineralAnalyzer", 	100,	"Ticks required to analyze minerals in the Mineral Analyzer").getInt();
+		speedExtractor = config.get(			CATEGORY_TOONS, "SpeedChemicalExtractor", 	60,	"Ticks required to extract elements in the Chemical Extractor").getInt();
 		speedAlloyer = config.get(				CATEGORY_TOONS, "SpeedMetalAlloyer", 		200,	"Ticks required to cast an alloy in the Metal Alloyer").getInt();
 		factorExtractor = config.get(		CATEGORY_TOONS, "ExtractingFactor", 		100,	"Percentage of element required to produce one regular dust").getInt();
 		gearUses = config.get(										CATEGORY_TOONS, "UsesGear", 				150,	"Max uses for the Crushing Gear in the Mineral Sizer").getInt();

@@ -3,31 +3,37 @@ package al132.atmrockhounding.tile;
 import java.util.ArrayList;
 
 import al132.atmrockhounding.ModConfig;
-import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.gui.GuiMetalAlloyer;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.recipes.machines.MetalAlloyerRecipe;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
-import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class TileMetalAlloyer extends TileMachine {
 
 	public static final int SLOT_INPUTS[] = new int[]{0,1,2,3,4,5,5};
-	//public static final int SLOT_FUEL = 6;
 	public static final int SLOT_CONSUMABLE = 7;
-	public static final int SLOT_INDUCTOR = 8;
 
 	public static final int SLOT_OUTPUT = 0;
 	private MetalAlloyerRecipe currentRecipe = null;
 
+	public static final int ENERGY_PER_TICK = 10;
+
+	@Override
+	public int getFuelIndex(){return 6;}
+	@Override
+	public int getInputIndex(){return -1;}
+
+	@Override
+	public int getConsumableIndex(){return 7;}
+
+
 	public TileMetalAlloyer() {
-		super(9, 1, 6);
+		super(8, 1, 6);
 
 		input =  new MachineStackHandler(INPUT_SLOTS,this){
 			@Override
@@ -35,13 +41,10 @@ public class TileMetalAlloyer extends TileMachine {
 				if(slot < SLOT_INPUTS.length && inputHasRecipe(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
+				if(slot == getFuelIndex() && isInductorOrFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				if(slot == SLOT_CONSUMABLE && ItemStack.areItemsEqualIgnoreDurability(insertingStack, new ItemStack(ModItems.ingotPattern))){
-					return super.insertItem(slot, insertingStack, simulate);
-				}
-				if(slot == SLOT_INDUCTOR && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				return insertingStack;
@@ -81,35 +84,23 @@ public class TileMetalAlloyer extends TileMachine {
 		if(!Utils.isHandlerEmpty(getDustHandler())){
 			for(MetalAlloyerRecipe recipe: ModRecipes.getImmutableAlloyerRecipes()){
 				if(recipe.matches(getDustHandler())){
-					this.currentRecipe = recipe;
-					break;
+					if(recipe.getInputs().size() == Utils.countHandlerNonEmptySlots(this.getDustHandler())){
+						this.currentRecipe = recipe;
+						break;
+					}
 				}
 			}
 		}
 		return this.currentRecipe != null;
 	}
 
-
-	@Override
-	public void readFromNBT(NBTTagCompound compound){
-		super.readFromNBT(compound);
-		this.cookTime = compound.getInteger("CookTime");
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		super.writeToNBT(compound);
-		compound.setInteger("CookTime", this.cookTime);
-		return compound;
-	}
-
 	@Override
 	public void update(){
 		if(!worldObj.isRemote){
-			if(input.getStackInSlot(FUEL_SLOT) != null){
+			if(input.getStackInSlot(getFuelIndex()) != null){
 				fuelHandler();
 			}
-			if(canAlloy()){
+			if(canProcess()){
 				execute(); 
 			}
 			this.markDirtyClient();
@@ -119,7 +110,7 @@ public class TileMetalAlloyer extends TileMachine {
 	private void execute() {
 
 		cookTime++;
-		powerCount--;
+		energyStorage.extractEnergy(ENERGY_PER_TICK, false);
 		if(cookTime >= getCookTimeMax()) {
 			cookTime = 0; 
 			consumeInput();
@@ -155,25 +146,17 @@ public class TileMetalAlloyer extends TileMachine {
 		output.setOrAdd(SLOT_OUTPUT, currentRecipe.getOutputs().get(0));
 	}
 
-	private boolean canAlloy() {
+	@Override
+	public boolean canProcess() {
 		return  matchesRecipe()
 				&& hasConsumable() 
-				&& powerCount >= getCookTimeMax()
-				&& canOutput();
-	}
-
-
-	private boolean hasConsumable() {
-		return input.getStackInSlot(SLOT_CONSUMABLE) != null;
+				&& energyStorage.getEnergyStored() >= getCookTimeMax()
+				&& canOutput()
+				&& (currentRecipe.getInputs().size() == Utils.countHandlerNonEmptySlots(this.getDustHandler()));
 	}
 
 	@Override
 	public int getGUIHeight() {
 		return GuiMetalAlloyer.HEIGHT;
-	}
-
-	@Override
-	public boolean canInduct(){
-		return input.getStackInSlot(SLOT_INDUCTOR) != null;
 	}
 }

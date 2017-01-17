@@ -8,7 +8,6 @@ import al132.atmrockhounding.compat.jei.RHRecipeUID;
 import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.tile.TileMineralAnalyzer;
-import al132.atmrockhounding.utils.RenderUtils;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -24,10 +23,6 @@ public class AnalyzerRecipeCategory extends RHRecipeCategory {
 	private static final int INPUT_SLOT = 1;
 	private static final int OUTPUT_SLOT = 2;
 	private static final int TUBE_SLOT = 3;
-	private static final int SULFURIC_SLOT = 4;
-	private static final int CHLOR_SLOT = 5;
-	private static final int FLUO_SLOT = 6;
-	
 
 
 	private final static ResourceLocation guiTexture = GuiMineralAnalyzer.TEXTURE_REF;

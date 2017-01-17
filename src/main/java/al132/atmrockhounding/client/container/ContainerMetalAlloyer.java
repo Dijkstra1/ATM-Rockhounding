@@ -22,7 +22,6 @@ public class ContainerMetalAlloyer extends ContainerBase<TileMetalAlloyer>{
         }
 		this.addSlotToContainer(new SlotItemHandler(input, 6, 8, 20));//fuel
         this.addSlotToContainer(new SlotItemHandler(input, 7, 98, 88));//consumable
-        this.addSlotToContainer(new SlotItemHandler(input, 8, 23, 74));//inductor
 
         this.addSlotToContainer(new SlotItemHandler(output, 0, 76, 88));//output
 	}

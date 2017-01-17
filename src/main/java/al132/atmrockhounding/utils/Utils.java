@@ -10,6 +10,21 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class Utils {
 
+	public static String[] concatStringArrays(String[] array1, String[] array2){
+		String[] temp = new String[array1.length+array2.length];
+		for(int i=0;i<array1.length;i++){
+			temp[i] = array1[i];
+		}
+		int j=0;
+		for(int i=array1.length;i<temp.length;i++){
+			
+			temp[i] = array2[j];
+			j++;
+		}
+		
+		return temp;
+	}
+	
 	public static ItemStack damage(ItemStack inStack){
 		ItemStack temp = inStack;
 		temp.setItemDamage(inStack.getItemDamage()+1);
@@ -19,11 +34,21 @@ public class Utils {
 	}
 
 
+
 	public static boolean isHandlerEmpty(IItemHandler handler){
 		boolean output = true;
 		for(int i = 0; i< handler.getSlots(); i++){
 			if(handler.getStackInSlot(i) != null) output = false;
 		}
+		return output;
+	}
+	
+	public static int countHandlerNonEmptySlots(IItemHandler handler){
+		int output = 0;
+		for(int i=0; i< handler.getSlots(); i++){
+			if(handler.getStackInSlot(i) != null) output++;
+		}
+		
 		return output;
 	}
 

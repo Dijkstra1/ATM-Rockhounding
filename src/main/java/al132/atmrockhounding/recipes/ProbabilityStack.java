@@ -37,7 +37,6 @@ public class ProbabilityStack {
 		return this.probability;
 	}
 	
-	
 
 	public static ItemStack calculateProbability(ArrayList<ProbabilityStack> stacks){
 		int totalProbability = 0;

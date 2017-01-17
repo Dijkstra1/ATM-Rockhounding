@@ -67,8 +67,8 @@ item.atmrockhounding:carbonateShards.gaspeite.name=Gaspeite Shard
 item.atmrockhounding:carbonateShards.rosasite.name=Rosasite Shard
 item.atmrockhounding:carbonateShards.parisite.name=Parisite Shard
 item.atmrockhounding:halideShards.boleite.name=Boleite Shard
-item.atmrockhounding:halideShards.carnallite.name=Boleite Shard
-item.atmrockhounding:halideShards.rinneite.name=Carnallite Shard
+item.atmrockhounding:halideShards.carnallite.name=Carnallite Shard
+item.atmrockhounding:halideShards.rinneite.name=Rinneite Shard
 item.atmrockhounding:halideShards.griceite.name=Griceite Shard
 item.atmrockhounding:halideShards.fluorite.name=Fluorite Shard
 item.atmrockhounding:nativeShards.cohenite.name=Cohenite Shard
@@ -218,6 +218,7 @@ item.atmrockhounding:wrench.name=Mod Wrench
 item.atmrockhounding:flask.name=Chemical Flask
 item.atmrockhounding:heatingElement.name=Heating Element
 item.atmrockhounding:inductionHeatingElement.name=Induction Heating Interface
+item.atmrockhounding:energizedFuelBlend.name=Energized Fuel Blend
 
 item.atmrockhounding:sulfuricBeaker.name=Sulfuric Acid Beaker
 #consumables
@@ -307,3 +308,8 @@ tile.atmrockhounding:alloyBricks.corten.name=Corten Steel Brick
 item.atmrockhounding:dust.dustCorten.name=Corten Steel Dust
 item.atmrockhounding:ingot.ingotCorten.name=Corten Steel Ingot
 item.atmrockhounding:nugget.nuggetCorten.name=Corten Steel Nugget
+tile.atmrockhounding:alloyBlocks2.tungsteel.name=Tungsteel Block
+tile.atmrockhounding:alloyBricks2.tungsteel.name=Tungsteel Brick
+item.atmrockhounding:dust.dustTungsteel.name=Tungsteel Dust
+item.atmrockhounding:ingot.ingotTungsteel.name=Tungsteel Ingot
+item.atmrockhounding:nugget.nuggetTungsteel.name=Tungsteel Nugget

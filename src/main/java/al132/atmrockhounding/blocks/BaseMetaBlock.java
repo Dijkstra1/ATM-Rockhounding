@@ -23,6 +23,7 @@ public class BaseMetaBlock extends Block implements IMetaBlockName{
 		setHardness(hardness);
 		setResistance(resistance);	
 		setSoundType(stepSound);
+		//setHarvestLevel("pickaxe", 1);
 		this.array = array;
 	}
 

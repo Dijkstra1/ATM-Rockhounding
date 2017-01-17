@@ -39,8 +39,8 @@ public class GuiMineralAnalyzer extends GuiBase {
 	   int x = (this.width - this.xSize) / 2;
 	   int y = (this.height - this.ySize) / 2;
 	   //bars progression (fuel-redstone)
-	   if(mouseX >= 11+x && mouseX <= 20+x && mouseY >= 40+y && mouseY <= 89+y){
-		   String[] text = {this.mineralAnalyzer.powerCount + "/" + this.mineralAnalyzer.powerMax + " ticks"};
+	   if(mouseX >= 9+x && mouseX <= 19+x && mouseY >= 54+y && mouseY <= 104+y){
+		   String[] text = {this.mineralAnalyzer.getEnergyStorage().getEnergyStored() + "/" + this.mineralAnalyzer.getEnergyStorage().getMaxEnergyStored() + " Energy"};
 		   List<String> tooltip = Arrays.asList(text);
 		   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 	   }
@@ -94,8 +94,8 @@ public class GuiMineralAnalyzer extends GuiBase {
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
         //power bar
-        if (this.mineralAnalyzer.powerCount > 0){
-            int k = this.getBarScaled(50, this.mineralAnalyzer.powerCount, this.mineralAnalyzer.powerMax);
+        if (this.mineralAnalyzer.getEnergyStorage().getEnergyStored() > 0){
+            int k = this.getBarScaled(50, this.mineralAnalyzer.getEnergyStorage().getEnergyStored(), this.mineralAnalyzer.getEnergyStorage().getMaxEnergyStored());
             this.drawTexturedModalRect(i + 9, j + 54 + (50 - k), 176, 51, 10, k);
         }
         //smelt bar

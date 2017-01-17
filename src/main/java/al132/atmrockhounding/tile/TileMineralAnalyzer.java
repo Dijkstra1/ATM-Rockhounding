@@ -1,15 +1,12 @@
 package al132.atmrockhounding.tile;
 
 import al132.atmrockhounding.ModConfig;
-import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.blocks.ModBlocks;
 import al132.atmrockhounding.client.gui.GuiMineralAnalyzer;
-import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.recipes.ProbabilityStack;
-import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,14 +17,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
-import scala.reflect.internal.Trees.This;
 
 public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTile{
 
@@ -35,22 +30,25 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	public static final int consumedChlo = 30;
 	public static final int consumedFluo = 20;
 
-	private static final int INPUT_SLOT = 0;
-	//						 FUEL_SLOT = 1;
-	private static final int CONSUMABLE_SLOT = 2;
-	private static final int SULFUR_SLOT = 3;
-	private static final int CHLOR_SLOT = 4;
-	private static final int FLUO_SLOT = 5;
-	private static final int INDUCTOR_SLOT = 6;
-
-	private static final int OUTPUT_SLOT = 0;
-
+	public static final int OUTPUT_SLOT = 0;
+	public static final int ENERGY_PER_TICK = 10;
+	
 	public FluidTank sulfTank;
 	public FluidTank chloTank;
 	public FluidTank fluoTank;
+	
+	@Override
+	public int getInputIndex(){return 0;}
+	
+	@Override
+	public int getFuelIndex(){return 1;}
+	
+	@Override
+	public int getConsumableIndex(){return 2;}
+	
 
 	public TileMineralAnalyzer() {
-		super(7,1,1);
+		super(3,1,1);
 
 		sulfTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
 			@Override  
@@ -91,16 +89,13 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 			@Override
 			public ItemStack insertItem(int slot, ItemStack insertingStack, boolean simulate){
 
-				if(slot == INPUT_SLOT && insertingStack.getMetadata() != 0 && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModBlocks.mineralOres), insertingStack)){
+				if(slot == getInputIndex() && insertingStack.getMetadata() != 0 && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModBlocks.mineralOres), insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
+				if(slot == getFuelIndex() && isInductorOrFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == CONSUMABLE_SLOT && insertingStack.getItem() == ModItems.testTube){
-					return super.insertItem(slot, insertingStack, simulate);
-				}
-				if(slot == INDUCTOR_SLOT && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
+				if(slot == getConsumableIndex() && insertingStack.getItem() == ModItems.testTube){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 
@@ -120,13 +115,6 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 		return output.getStackInSlot(OUTPUT_SLOT) == null;
 	}
 
-	private boolean hasConsumable(){
-		return !(input.getStackInSlot(CONSUMABLE_SLOT) == null);
-	}
-
-	private boolean hasInput(){
-		return !(input.getStackInSlot(INPUT_SLOT) == null);
-	}
 
 	//----------------------- CUSTOM -----------------------
 
@@ -139,7 +127,6 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		this.cookTime = compound.getInteger("CookTime");
 		this.sulfTank.readFromNBT(compound.getCompoundTag("SulfTank"));
 		this.chloTank.readFromNBT(compound.getCompoundTag("ChloTank"));
 		this.fluoTank.readFromNBT(compound.getCompoundTag("FluoTank"));
@@ -148,7 +135,6 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		super.writeToNBT(compound);
-		compound.setInteger("CookTime", this.cookTime);
 
 		NBTTagCompound sulfTankNBT = new NBTTagCompound();
 		this.sulfTank.writeToNBT(sulfTankNBT);
@@ -170,10 +156,11 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	//----------------------- PROCESS -----------------------
 	@Override
 	public void update(){
-		if(input.getStackInSlot(FUEL_SLOT) != null){fuelHandler();}
+		if(input.getStackInSlot(getFuelIndex()) != null){fuelHandler();}
 		if(!worldObj.isRemote){
-			if(canAnalyze()){
-				cookTime++; powerCount--;
+			if(canProcess()){
+				cookTime++;
+				energyStorage.extractEnergy(ENERGY_PER_TICK, false);
 				if(cookTime >= getCookTimeMax()) {
 					cookTime = 0; 
 					handleSlots();
@@ -184,9 +171,9 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 	}
 
 	private void handleSlots() {
-		calculateOutput(input.getStackInSlot(INPUT_SLOT).getItemDamage());
-		input.damageSlot(CONSUMABLE_SLOT);
-		input.decrementSlot(INPUT_SLOT);
+		calculateOutput(input.getStackInSlot(getInputIndex()).getItemDamage());
+		input.damageSlot(getConsumableIndex());
+		input.decrementSlot(getInputIndex());
 	}
 
 
@@ -218,20 +205,15 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 		this.fluoTank.getFluid().amount-= consumedFluo;
 	}
 
-	private boolean canAnalyze() {
-		return  output.getStackInSlot(OUTPUT_SLOT) == null
+	@Override
+	public boolean canProcess() {
+		return  isOutputEmpty()
 				&& hasInput()
 				&& hasConsumable()
-				&& powerCount >= getCookTimeMax()
+				&& energyStorage.getEnergyStored() >= getCookTimeMax()
 				&& this.sulfTank.getFluidAmount() >= consumedSulf
 				&& this.chloTank.getFluidAmount() >= consumedChlo
 				&& this.fluoTank.getFluidAmount() >= consumedFluo;
-	}
-
-
-	@Override
-	public boolean canInduct(){
-		return !(input.getStackInSlot(INDUCTOR_SLOT) == null);
 	}
 
 	@Override
@@ -247,21 +229,7 @@ public class TileMineralAnalyzer extends TileMachine implements IFluidHandlingTi
 		return didFill;
 	}
 
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
-		else return super.hasCapability(capability, facing);
-	}
-
 	public FluidHandlerConcatenate getCombinedTank(){
 		return new FluidHandlerConcatenate(sulfTank,chloTank,fluoTank);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return (T) getCombinedTank();
-		return super.getCapability(capability, facing);
 	}
 }

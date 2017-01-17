@@ -40,10 +40,6 @@ public class CommonProxy {
 	}
 
 	public void postInit(FMLPostInitializationEvent e){}
-
-	public void registerTileEntitySpecialRenderer() {}
-
-	public void registerRenderInformation() {}
 	
 	public void initFluidModel(Block block, Fluid fluid) {}
 }

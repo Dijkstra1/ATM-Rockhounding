@@ -4,50 +4,50 @@ package al132.atmrockhounding.tile;
 import java.util.ArrayList;
 
 import al132.atmrockhounding.ModConfig;
-import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.blocks.ModBlocks;
 import al132.atmrockhounding.client.gui.GuiMineralSizer;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.recipes.ModRecipes;
 import al132.atmrockhounding.recipes.machines.MineralSizerRecipe;
-import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileMineralSizer extends TileMachine {
 
-	public static final int INPUT_SLOT = 0;
-	//						FUEL_SLOT = 1;
-	public static final int GEAR_SLOT = 2;
-	public static final int INDUCTOR_SLOT = 3;
+	public static final int ENERGY_PER_TICK = 10;
 
 	public static final int OUTPUT_SLOT = 0;
 	public static final int GOOD_SLOT = 1;
 	public static final int WASTE_SLOT = 2;
 
+	@Override
+	public int getInputIndex(){return 0;}
+
+	@Override
+	public int getFuelIndex(){return 1;}
+
+	@Override
+	public int getConsumableIndex(){return 2;}
+
+
 	public TileMineralSizer() {
-		super(4,3,1);
-		this.powerCount = 0;
+		super(3,3,1);
 		this.cookTime = 0;
-		
-		
+
+
 		input =  new MachineStackHandler(INPUT_SLOTS,this){
 			@Override
 			public ItemStack insertItem(int slot, ItemStack insertingStack, boolean simulate){
 				//input slots
-				if(slot == 0 && (hasRecipe(insertingStack) || isIngotOredicted(insertingStack)) ){
+				if(slot == getInputIndex() && (hasRecipe(insertingStack) || isIngotOredicted(insertingStack)) ){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == 1 && FuelUtils.isItemFuel(insertingStack)){
+				if(slot == getFuelIndex() && isInductorOrFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == 2 && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModItems.gear), insertingStack)){
-					return super.insertItem(slot, insertingStack, simulate);
-				}
-				if(slot == 3 && ItemStack.areItemsEqual(insertingStack, Reference.inductor)){
+				if(slot == getConsumableIndex() && Utils.areItemsEqualIgnoreMeta(new ItemStack(ModItems.gear), insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
 				return insertingStack;
@@ -73,36 +73,32 @@ public class TileMineralSizer extends TileMachine {
 		return ModConfig.speedSizer;
 	}
 
-	private boolean allOutputsEmpty(){
-		return (output.getStackInSlot(OUTPUT_SLOT) == null
-				&& output.getStackInSlot(GOOD_SLOT) == null
-				&& output.getStackInSlot(WASTE_SLOT) == null);
-	}
 
 	private boolean canOutput(ItemStack stack){
 
-		if(ItemStack.areItemsEqual(new ItemStack(ModBlocks.mineralOres,1,0), stack)
-				&& allOutputsEmpty()){
-			return true;
-		}
-		else{
-			if(stack != null && output.getStackInSlot(OUTPUT_SLOT) != null){
-				ItemStack recipeOutput = getRecipeOutput(new ItemStack(stack.getItem(),1,stack.getItemDamage()));
-				return ItemHandlerHelper.canItemStacksStack(output.getStackInSlot(OUTPUT_SLOT), recipeOutput);
+		if(ItemStack.areItemsEqual(new ItemStack(ModBlocks.mineralOres,1,0), stack)){
+			if(Utils.isHandlerEmpty(output)){
+				return true;
 			}
-			else return true;
+			/*else if(( output.getStackInSlot(OUTPUT_SLOT) == null || output.getStackInSlot(OUTPUT_SLOT).stackSize <= 60)
+					&&( output.getStackInSlot(GOOD_SLOT) == null ||output.getStackInSlot(GOOD_SLOT).stackSize <= 62)
+					&& (output.getStackInSlot(WASTE_SLOT) == null|| output.getStackInSlot(WASTE_SLOT).stackSize <=63)){
+				return true;
+
+			}*/
 		}
+		else if(stack != null) {
+			if(output.getStackInSlot(OUTPUT_SLOT) != null){
+				ItemStack recipeOutput = getRecipeOutput(new ItemStack(stack.getItem(),1,stack.getItemDamage()));
+				return (recipeOutput.stackSize + output.getStackInSlot(OUTPUT_SLOT).stackSize <= 64)
+						&& ItemHandlerHelper.canItemStacksStack(output.getStackInSlot(OUTPUT_SLOT), recipeOutput);
+			}
+			else{
+				return true;
+			}
+		}
+		return false;
 	}
-
-	public boolean hasGear(){
-		return !(input.getStackInSlot(GEAR_SLOT) == null);
-	}
-
-	@Override
-	public boolean canInduct(){
-		return !(input.getStackInSlot(INDUCTOR_SLOT) == null);
-	}
-
 
 	public boolean hasRecipe(ItemStack stack){
 		if(stack != null){
@@ -114,7 +110,7 @@ public class TileMineralSizer extends TileMachine {
 	}
 
 	public ItemStack getRecipeOutput(){
-		return getRecipeOutput(input.getStackInSlot(INPUT_SLOT));
+		return getRecipeOutput(input.getStackInSlot(getInputIndex()));
 	}
 
 
@@ -130,31 +126,15 @@ public class TileMineralSizer extends TileMachine {
 	}
 
 
-	//----------------------- I/O -----------------------
-	@Override
-	public void readFromNBT(NBTTagCompound compound){
-		super.readFromNBT(compound);
-		this.cookTime = compound.getInteger("CookTime");
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		super.writeToNBT(compound);
-		compound.setInteger("CookTime", this.cookTime);
-		return compound;
-	}
-
-
-
 	//----------------------- PROCESS -----------------------
 
 	@Override
 	public void update(){
-		if(input.getStackInSlot(FUEL_SLOT) != null){fuelHandler();}
+		if(input.getStackInSlot(getFuelIndex()) != null){fuelHandler();}
 		if(!worldObj.isRemote){
-			if(canProcess(input.getStackInSlot(INPUT_SLOT))){
+			if(canProcess()){
 				cookTime++;
-				powerCount--;
+				energyStorage.extractEnergy(ENERGY_PER_TICK, false);
 				if(cookTime >= getMaxCookTime()) {
 					cookTime = 0;
 					process();
@@ -164,11 +144,13 @@ public class TileMineralSizer extends TileMachine {
 		}
 	}
 
-	private boolean canProcess(ItemStack stack) {
+	@Override
+	public boolean canProcess() {
+		ItemStack stack = input.getStackInSlot(getInputIndex());
 		return  (canOutput(stack)
 				&& (hasRecipe(stack) || isIngotOredicted(stack))
-				&& hasGear()
-				&& powerCount >= getMaxCookTime());
+				&& hasConsumable()
+				&& energyStorage.getEnergyStored() >= getMaxCookTime());
 	}
 
 	private void process() {
@@ -199,12 +181,12 @@ public class TileMineralSizer extends TileMachine {
 			}
 		}
 
-		input.decrementSlot(INPUT_SLOT);
-		input.damageSlot(GEAR_SLOT);
+		input.decrementSlot(getInputIndex());
+		input.damageSlot(getConsumableIndex());
 		this.markDirty();
 	}
 
-	private int extractCategory() {	
+	private int extractCategory() {
 		Integer getCategory = rand.nextInt(158);
 		if(getCategory < 5){ return 1;										//arsenate
 		}else if(getCategory >= 5   && getCategory < 17){  return 2;		//borate
@@ -227,7 +209,6 @@ public class TileMineralSizer extends TileMachine {
 				for(Integer oreID: recipeOreIDs){
 					if(inputOreIDs.contains(oreID)) return true;
 				}
-				//if(oreName != null && oreName.contains("ingot")){
 			}
 		}
 		return false;

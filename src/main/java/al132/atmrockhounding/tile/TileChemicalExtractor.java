@@ -2,15 +2,12 @@ package al132.atmrockhounding.tile;
 
 import al132.atmrockhounding.ModConfig;
 import al132.atmrockhounding.client.gui.GuiChemicalExtractor;
-import al132.atmrockhounding.enums.EnumFluid;
 import al132.atmrockhounding.fluids.ModFluids;
 import al132.atmrockhounding.items.ModItems;
 import al132.atmrockhounding.tile.WrappedItemHandler.WriteMode;
-import al132.atmrockhounding.utils.FuelUtils;
 import al132.atmrockhounding.utils.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +15,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -28,27 +24,44 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 
 public class TileChemicalExtractor extends TileMachine implements IFluidHandlingTile{
 
-	public int[] elementList = new int[56];
+	public int[] elementList;//= new int[56];
 
 	public static int consumedSyng = 10;
 	public static int consumedFluo = 20;
 
-	private int redstoneCharge = ModConfig.speedExtractor;
+	private int chargePerRedstone = ModConfig.speedExtractor;
 
-	private static final int INPUT_SLOT = 0;
-	// FUEL_SLOT = 1;
-	private static final int REDSTONE_SLOT = 2;
-	private static final int CONSUMABLE_SLOT = 3;
-	private static final int SYNGAS_SLOT = 4;
-	private static final int FLUO_SLOT = 5;
+	public static final int ENERGY_PER_TICK = 20;
+
+	public static final int SYNGAS_SLOT = 3;
+	public static final int FLUO_SLOT = 4;
+
+	public int[] getElements(){
+		return elementList;
+	}
+
+	public void setElements(int[] elements){
+		this.elementList = elements;
+	}
+
+	@Override
+	public int getInputIndex(){return 0;}
+
+	@Override
+	public int getFuelIndex(){return 1;}
+
+	@Override
+	public int getConsumableIndex(){return 2;}
+
+
 	ItemStack inductor = new ItemStack(ModItems.inductionHeatingElement);
-	
+
 	public FluidTank syngasTank;
 	public FluidTank fluoTank;
 
 	public TileChemicalExtractor() {
-		super(6,56,1);
-
+		super(5,56,1);
+		elementList = new int[56];
 		syngasTank = new FluidTank(Fluid.BUCKET_VOLUME*10){
 			@Override  
 			public boolean canFillFluidType(FluidStack fluid)
@@ -75,26 +88,26 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 		input = new MachineStackHandler(6,this){
 			@Override
 			public ItemStack insertItem(int slot, ItemStack insertingStack, boolean simulate){
-				if(slot == INPUT_SLOT && hasRecipe(insertingStack)){
+				if(slot == getInputIndex() && hasRecipe(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == FUEL_SLOT && FuelUtils.isItemFuel(insertingStack)){
+				if(slot == getFuelIndex() && isInductorOrFuel(insertingStack)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == REDSTONE_SLOT &&
-						(insertingStack.getItem() == Items.REDSTONE || (insertingStack.isItemEqual(inductor)))){
+				if(slot == getConsumableIndex() &&
+						(insertingStack.getItem()==ModItems.testTube)){
 					return super.insertItem(slot, insertingStack, simulate);
 				}
-				if(slot == CONSUMABLE_SLOT &&
-						(insertingStack.getItem()==ModItems.testTube || insertingStack.getItem() == ModItems.cylinder)){
-					return super.insertItem(slot, insertingStack, simulate);
+				if(slot == SYNGAS_SLOT && FluidUtil.getFluidContained(insertingStack) != null){
+					if(FluidUtil.getFluidContained(insertingStack).getFluid().getName()=="syngas") {
+						return super.insertItem(slot, insertingStack, simulate);
+					}
 				}
-				/*if(slot == SYNGAS_SLOT && ItemStack.areItemsEqual(stackA, stackB)(insertingStack,EnumFluid.SYNGAS)) {
-					return super.insertItem(slot, insertingStack, simulate);
+				if(slot == FLUO_SLOT && FluidUtil.getFluidContained(insertingStack) != null){
+					if(FluidUtil.getFluidContained(insertingStack).getFluid().getName() == "hydrofluoric_acid") {
+						return super.insertItem(slot, insertingStack, simulate);
+					}
 				}
-				if(slot == FLUO_SLOT && hasFluid(insertingStack,EnumFluid.HYDROFLUORIC_ACID)){
-					return super.insertItem(slot, insertingStack, simulate);
-				}*/
 				return insertingStack;
 			}
 		};
@@ -123,27 +136,15 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 	}
 
 	public boolean hasFuel(){
-		return input.getStackInSlot(FUEL_SLOT) != null;
-	}
-
-	public boolean hasRedstone(){
-		return input.getStackInSlot(REDSTONE_SLOT) != null;
-	}
-
-	public boolean hasCylinder() {
-		return Utils.areItemsEqualIgnoreMeta(input.getStackInSlot(CONSUMABLE_SLOT), new ItemStack(ModItems.cylinder));
-	}
-
-	public boolean hasTestTube(){
-		return Utils.areItemsEqualIgnoreMeta(input.getStackInSlot(CONSUMABLE_SLOT), new ItemStack(ModItems.testTube));
+		return input.getStackInSlot(getFuelIndex()) != null;
 	}
 
 	public int getInputDamage(){
-		return input.getStackInSlot(INPUT_SLOT).getItemDamage();
+		return input.getStackInSlot(getInputIndex()).getItemDamage();
 	}
 
 	public Item getInputItem(){
-		return input.getStackInSlot(INPUT_SLOT).getItem();
+		return input.getStackInSlot(getInputIndex()).getItem();
 	}
 
 
@@ -151,11 +152,7 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		for(int i = 0; i < elementList.length; i++){
-			elementList[i] = compound.getInteger("element" + i);
-		}
-		this.cookTime = compound.getInteger("CookTime");
-		this.redstoneCount = compound.getInteger("RedstoneCount");
+		this.elementList = compound.getIntArray("elements");
 		this.syngasTank.readFromNBT(compound.getCompoundTag("SyngasTank"));
 		this.fluoTank.readFromNBT(compound.getCompoundTag("FluoTank"));
 	}
@@ -163,12 +160,10 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		super.writeToNBT(compound);
-		for(int i = 0; i < elementList.length; i++){
+		/*for(int i = 0; i < elementList.length; i++){
 			compound.setInteger("element" + i, elementList[i]);
-		}
-		compound.setInteger("CookTime", this.cookTime);
-		compound.setInteger("RedstoneCount", this.redstoneCount);
-
+		}*/
+		compound.setIntArray("elements", elementList);
 		NBTTagCompound syngasTankNBT = new NBTTagCompound();
 		this.syngasTank.writeToNBT(syngasTankNBT);
 		compound.setTag("SyngasTank", syngasTankNBT);
@@ -182,30 +177,43 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 
 
 
-
-
 	//----------------------- PROCESS -----------------------
 
 	@Override
 	public void update(){
 		if(!worldObj.isRemote){
 			if(hasFuel()){fuelHandler();}
-			if(hasRedstone()){redstoneHandler();}
-			if(canExtractElements()){
+
+			if( FluidUtil.getFluidContained(input.getStackInSlot(SYNGAS_SLOT)) != null){
+				if(FluidUtil.tryEmptyContainer(input.getStackInSlot(SYNGAS_SLOT), syngasTank, 1000, null, false) != null){
+					input.setStackInSlot(SYNGAS_SLOT,FluidUtil.tryEmptyContainer(input.getStackInSlot(SYNGAS_SLOT), syngasTank, 1000, null, true));
+				}
+			}
+
+			if( FluidUtil.getFluidContained(input.getStackInSlot(FLUO_SLOT)) != null){
+				if(FluidUtil.tryEmptyContainer(input.getStackInSlot(FLUO_SLOT), fluoTank, 1000, null, false) != null){
+					input.setStackInSlot(FLUO_SLOT,FluidUtil.tryEmptyContainer(input.getStackInSlot(FLUO_SLOT), fluoTank, 1000, null, true));
+				}
+			}
+
+			if(canProcess()){
 				execute();
 			}
-			if(hasCylinder()){transferDust();}
+			transferDust();
 			this.markDirtyClient();
 		}
 	}
 
 	private void transferDust() {
 		for(int i=0;i<output.getSlots();i++){
-			if(elementList[i] >= getExtractingFactor()){
-				elementList[i]-= getExtractingFactor();
-				output.setOrIncrement(i, new ItemStack(ModItems.chemicalDusts,1,i));
-				input.damageSlot(CONSUMABLE_SLOT);
-				this.markDirty();
+			if(elementList.length >= 56){
+				if(elementList[i] >= getExtractingFactor()){
+					elementList[i]-= getExtractingFactor();
+					output.setOrIncrement(i, new ItemStack(ModItems.chemicalDusts,1,i));
+					if(input.getStackInSlot(getConsumableIndex()) == null) return;
+					input.damageSlot(getConsumableIndex());
+					this.markDirty();
+				}
 			}
 		}
 	}
@@ -222,38 +230,23 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 
 	private void execute() {
 		cookTime++;
-		powerCount--;
-		redstoneCount -= 2;
+		energyStorage.extractEnergy(ENERGY_PER_TICK, false);
 		if(cookTime >= getCookTimeMax()) {
 			cookTime = 0; 
 			extractElements();
-			input.decrementSlot(INPUT_SLOT);
-			input.damageSlot(CONSUMABLE_SLOT);
+			input.decrementSlot(getInputIndex());
+			input.damageSlot(getConsumableIndex());
 			syngasTank.getFluid().amount-= consumedSyng;
 			fluoTank.getFluid().amount-= consumedFluo;
 			this.markDirty();
 		}
 	}
 
-	private void redstoneHandler() {
-		if(input.getStackInSlot(REDSTONE_SLOT) != null && input.getStackInSlot(REDSTONE_SLOT).getItem() == Items.REDSTONE && redstoneCount <= (redstoneMax - redstoneCharge)){
-			redstoneCount += redstoneCharge;
-			input.decrementSlot(REDSTONE_SLOT);
-		}
-	}
-
 	@Override
-	public boolean canInduct() {
-		return redstoneCount >= redstoneMax 
-				&& ItemStack.areItemsEqual(inductor, input.getStackInSlot(REDSTONE_SLOT));
-	}
-
-
-	private boolean canExtractElements() {
-		return  hasRecipe(input.getStackInSlot(INPUT_SLOT))
-				&& hasTestTube()
-				&& powerCount >= getCookTimeMax()
-				&& redstoneCount >= getCookTimeMax()
+	public boolean canProcess() {
+		return  hasRecipe(input.getStackInSlot(getInputIndex()))
+				&& hasConsumable()
+				&& energyStorage.getEnergyStored() >= getCookTimeMax()
 				&& syngasTank.getFluidAmount() >= TileChemicalExtractor.consumedSyng
 				&& fluoTank.getFluidAmount() >=TileChemicalExtractor.consumedFluo;
 	}
@@ -271,27 +264,21 @@ public class TileChemicalExtractor extends TileMachine implements IFluidHandling
 				stack.getItem()  == ModItems.sulfateShards ||
 				stack.getItem()  == ModItems.sulfideShards);
 	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
-		else return super.hasCapability(capability, facing);
-	}
 
+	@Override
 	public FluidHandlerConcatenate getCombinedTank(){
 		return new FluidHandlerConcatenate(syngasTank,fluoTank);
 	}
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return (T) getCombinedTank();
-		return super.getCapability(capability, facing);
-	}
-
-
 	private void extractElements() {
-		if(input.getStackInSlot(INPUT_SLOT).getItem() == ModItems.arsenateShards){
+		//This is stupid.. but whatever
+		if(elementList.length <56){
+			elementList = new int[56];
+			for(int i=0;i<56;i++){
+				elementList[0] = 0;
+			}
+		}
+		if(input.getStackInSlot(getInputIndex()).getItem() == ModItems.arsenateShards){
 			if(getInputDamage() == 0){
 				elementList[17] += 36;
 				elementList[41] += 22;

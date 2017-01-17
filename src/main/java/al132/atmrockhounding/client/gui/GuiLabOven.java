@@ -3,15 +3,12 @@ package al132.atmrockhounding.client.gui;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Range;
-
 import al132.atmrockhounding.Reference;
 import al132.atmrockhounding.client.container.ContainerLabOven;
 import al132.atmrockhounding.tile.TileLabOven;
 import al132.atmrockhounding.utils.RenderUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,17 +39,12 @@ public class GuiLabOven extends GuiBase {
 		int y = (this.height - this.ySize) / 2;
 
 		//fuel
-		if(mouseX >= 11+x && mouseX <= 21+x && mouseY >= 74+y && mouseY <= 124+y){
-			String[] text = {this.labOven.getPower() + "/" + this.labOven.getPowerMax() + " ticks"};
+		if(mouseX >= 24+x && mouseX <= 34+x && mouseY >= 25+y && mouseY <= 75+y){
+			String[] text = {this.labOven.getEnergyStorage().getEnergyStored() + "/" + this.labOven.getEnergyStorage().getMaxEnergyStored() + " Energy"};
 			List<String> tooltip = Arrays.asList(text);
 			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 		}
-		//redstone
-		if(mouseX >= 29+x && mouseX <= 38+x && mouseY >= 26+y && mouseY <= 75+y){
-			String[] text = {this.labOven.getRedstone() + "/" + this.labOven.getRedstoneMax() + " RF"};
-			List<String> tooltip = Arrays.asList(text);
-			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
-		}
+
 
 		//input tank
 		if(mouseX>= 146+x && mouseX <= 166+x && mouseY >= 45+y && mouseY <= 110+y){
@@ -65,7 +57,7 @@ public class GuiLabOven extends GuiBase {
 			List<String> tooltip = Arrays.asList(text);
 			drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 		}
-		
+
 		//output tank
 		if(mouseX>= 89+x && mouseX <= 109+x && mouseY >= 45+y && mouseY <= 110+y){
 			int fluidAmount = 0;
@@ -93,25 +85,19 @@ public class GuiLabOven extends GuiBase {
 		int j = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 		//power bar
-		if (this.labOven.powerCount > 0){
-			int k = this.getBarScaled(50, this.labOven.powerCount, this.labOven.powerMax);
-			this.drawTexturedModalRect(i + 11, j + 74 + (50 - k), 176, 27, 10, k);
+		if (this.labOven.getEnergyStorage().getEnergyStored() > 0){
+			int k = this.getBarScaled(50, this.labOven.getEnergyStorage().getEnergyStored(), this.labOven.getEnergyStorage().getMaxEnergyStored());
+			this.drawTexturedModalRect(i + 24, j + 25 + (50 - k), 176, 27, 10, k);
 		}
 
-		//redstone
-		if (this.labOven.redstoneCount > 0){
-			int k = this.getBarScaled(50, this.labOven.redstoneCount, this.labOven.redstoneMax);
-			this.drawTexturedModalRect(i + 29, j + 26 + (50 - k), 176, 81, 10, k);
-		}
 		//smelt bar
-		int k = this.getBarScaled(14, this.labOven.cookTime, this.labOven.getCookTimeMax());
-		this.drawTexturedModalRect(i + 67, j + 70, 176, 0, k, 15); //bubbles
-		//process icons
-		if(this.labOven.canSynthesize()){
+		if (this.labOven.cookTime > 0){
+			int k = this.getBarScaled(14, this.labOven.cookTime, this.labOven.getCookTimeMax());
+			this.drawTexturedModalRect(i + 67, j + 70, 176, 0, k, 15); //bubbles
+
 			this.drawTexturedModalRect(i + 93, j + 114, 176, 131, 12, 14); //fire
 			this.drawTexturedModalRect(i + 121, j + 72, 176, 145, 14, 9); //fluid drop
 		}
-		//FluidStack stack = new FluidStack(FluidRegistry.getFluid(labOven.inputTankFluidID),labOven.inputTankQuantity);
 
 		if(labOven.inputTank.getFluid() != null){
 			FluidStack temp = labOven.inputTank.getFluid();

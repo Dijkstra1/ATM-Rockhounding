@@ -38,7 +38,7 @@ public class GuiMineralSizer extends GuiBase {
 	   int y = (this.height - this.ySize) / 2;
 	   //bars progression (fuel-redstone)
 	   if(mouseX >= 11+x && mouseX <= 20+x && mouseY >= 40+y && mouseY <= 89+y){
-		   String[] text = {mineralSizer.powerCount + "/" + this.mineralSizer.powerMax + " ticks"};
+		   String[] text = {mineralSizer.getEnergyStorage().getEnergyStored() + "/" + this.mineralSizer.getEnergyStorage().getMaxEnergyStored() + " Energy"};
 		   List<String> tooltip = Arrays.asList(text);
 		   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 	   }
@@ -62,8 +62,8 @@ public class GuiMineralSizer extends GuiBase {
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
         //power bar
-        if (this.mineralSizer.powerCount > 0){
-            int k = this.getBarScaled(50, this.mineralSizer.powerCount, this.mineralSizer.powerMax);
+        if (this.mineralSizer.getEnergyStorage().getEnergyStored() > 0){
+            int k = this.getBarScaled(50, this.mineralSizer.getEnergyStorage().getEnergyStored(), this.mineralSizer.getEnergyStorage().getMaxEnergyStored());
             this.drawTexturedModalRect(i + 11, j + 40 + (50 - k), 176, 51, 10, k);
         }
         //smelt bar

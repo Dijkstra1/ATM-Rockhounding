@@ -35,8 +35,8 @@ public class GuiMetalAlloyer extends GuiBase {
 		int y = (this.height - this.ySize) / 2;
 
 		   //bars progression (fuel)
-		   if(mouseX >= 11+x && mouseX <= 20+x && mouseY >= 40+y && mouseY <= 89+y){
-			   String[] text = {this.metalAlloyer.getPower() + "/" + this.metalAlloyer.getPowerMax() + " ticks"};
+		   if(mouseX >= 11+x && mouseX <= 21+x && mouseY >= 40+y && mouseY <= 90+y){
+			   String[] text = {this.metalAlloyer.getEnergyStorage().getEnergyStored() + "/" + this.metalAlloyer.getEnergyStorage().getMaxEnergyStored() + " Energy"};
 			   List<String> tooltip = Arrays.asList(text);
 			   drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 		   }
@@ -58,8 +58,8 @@ public class GuiMetalAlloyer extends GuiBase {
 		this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 
         //power bar
-        if (this.metalAlloyer.powerCount > 0){
-            int k = this.getBarScaled(50, this.metalAlloyer.powerCount, this.metalAlloyer.powerMax);
+        if (this.metalAlloyer.getEnergyStorage().getEnergyStored() > 0){
+            int k = this.getBarScaled(50, this.metalAlloyer.getEnergyStorage().getEnergyStored(), this.metalAlloyer.getEnergyStorage().getMaxEnergyStored());
             this.drawTexturedModalRect(i + 11, j + 40 + (50 - k), 176, 27, 10, k);
         }
         //smelt bar

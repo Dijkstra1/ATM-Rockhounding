@@ -1,6 +1,7 @@
 package al132.atmrockhounding.blocks;
 
 import al132.atmrockhounding.enums.EnumAlloy;
+import al132.atmrockhounding.enums.EnumAlloy2;
 import al132.atmrockhounding.enums.EnumMineral;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -13,8 +14,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
 	public static Block mineralOres;
-	public static Block alloyBlocks;
-	public static Block alloyBricks;
+	public static AlloyBlocks alloyBlocks;
+	public static AlloyBlocks2 alloyBlocks2;
+	public static AlloyBricks alloyBricks;
+	public static AlloyBricks2 alloyBricks2;
 
 	public static Block labOven;
 	public static Block mineralSizer;
@@ -29,8 +32,11 @@ public class ModBlocks {
 
 		mineralOres = new MineralOres(3.0F, 5.0F, "mineralOres");
 		alloyBlocks = new AlloyBlocks(Material.IRON, EnumAlloy.getLowerNameArray(), 3.0F, 5.0F, "alloyBlocks", SoundType.METAL);
+		alloyBlocks2 = new AlloyBlocks2(Material.IRON, EnumAlloy2.getLowerNameArray(), 3.0F, 5.0F, "alloyBlocks2", SoundType.METAL);
+		
 		alloyBricks = new AlloyBricks(Material.IRON, EnumAlloy.getLowerNameArray(), 3.0F, 5.0F, "alloyBricks", SoundType.METAL);
-
+		alloyBricks2 = new AlloyBricks2(Material.IRON, EnumAlloy2.getLowerNameArray(), 3.0F, 5.0F, "alloyBricks2", SoundType.METAL);
+		
 		labOven = new LabOven(3.0F, 5.0F, "labOven");
 		mineralSizer = new MineralSizer(3.0F, 5.0F, "mineralSizer");
 		mineralAnalyzer = new MineralAnalyzer(3.0F, 5.0F, "mineralAnalyzer");
@@ -45,7 +51,9 @@ public class ModBlocks {
 		//blocks
 		registerMetaBlock(mineralOres, "mineralOres");
 		registerMetaBlock(alloyBlocks, "alloyBlocks");
+		registerMetaBlock(alloyBlocks2, "alloyBlocks2");
 		registerMetaBlock(alloyBricks, "alloyBricks");
+		registerMetaBlock(alloyBricks2, "alloyBricks2");
 		//registerMetaBlock(saltMaker, "saltMaker");
 	}
 
@@ -70,6 +78,10 @@ public class ModBlocks {
 		for(int i = 0; i < EnumAlloy.size(); i++){
 			registerMetaBlockRender(alloyBlocks, i, EnumAlloy.getName(i));
 			registerMetaBlockRender(alloyBricks, i, EnumAlloy.getName(i));
+		}
+		for(int i = 0; i < EnumAlloy2.size(); i++){
+			registerMetaBlockRender(alloyBlocks2, i, EnumAlloy2.getName(i));
+			registerMetaBlockRender(alloyBricks2, i, EnumAlloy2.getName(i));
 		}
 
 		registerSingleBlockRender(labOven, 0, "labOven");

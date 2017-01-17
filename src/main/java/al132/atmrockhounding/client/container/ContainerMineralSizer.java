@@ -19,7 +19,6 @@ public class ContainerMineralSizer extends ContainerBase<TileMineralSizer>{
 		this.addSlotToContainer(new SlotItemHandler(input, 0, 44, 28));//input
 		this.addSlotToContainer(new SlotItemHandler(input, 1, 8, 20));//fuel
 		this.addSlotToContainer(new SlotItemHandler(input, 2, 81, 48));//consumable
-		this.addSlotToContainer(new SlotItemHandler(input, 3, 23, 74));//inductor
 
 		this.addSlotToContainer(new SlotItemHandler(output, 0, 120, 48));//output
 		this.addSlotToContainer(new SlotItemHandler(output, 1, 144, 48));//secondary

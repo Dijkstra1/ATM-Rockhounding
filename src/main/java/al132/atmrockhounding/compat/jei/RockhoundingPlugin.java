@@ -81,15 +81,12 @@ public class RockhoundingPlugin extends BlankModPlugin{
 		
 		registry.addDescription(new ItemStack(ModBlocks.chemicalExtractor), 
 				"The chemical extractor is used to extract element dusts from shards. It needs the following to operate:\n\n "
-						+ "1. A fuel source in the top left fuel slot (like coal, or wood, or whatever)\n\n"
-						+ "2. Redstone dust or an induction heating element in the slot next to that. "
-						+ "The induction heating element allows the block to receive rf instead of needing redstone dust\n\n"
-						+ "3. Syngas in the left fluid tank, made in the Lab Oven\n\n"
-						+ "4. Hydrofluoric in the right fluid tank, made in the Lab Oven\n\n"
-						+ "5. A test tube in the test tube slot\n\n"
-						+ "6. Lastly, any shard that has been outputted by the mineral analyzer\n\n "
-						+ "Once all the ingredients are in place it will start extracting elements.\n\n"
-						+ "Once a tile has extracted enough of an element to fill up a bar in the chemical table a graduated cylinder"
-						+ "can be put into the test tube slot to extract the chemical dusts");
+						+ "1. Energized Fuel Blend in the top left slot, or an induction heating element, which allows the "
+						+ "block to receive RF instead of needing energized fuel blend\n\n"
+						+ "2. Syngas in the left fluid tank, made in the Lab Oven\n\n"
+						+ "3. Hydrofluoric in the right fluid tank, made in the Lab Oven\n\n"
+						+ "4. A test tube in the test tube slot\n\n"
+						+ "5. Lastly, any shard that has been produced by the mineral analyzer\n\n "
+						+ "Once all the ingredients are in place it will start extracting elements.\n\n");
 	}
 }
